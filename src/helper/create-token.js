@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 
 export default function createToken(config) {
-  return (message, data, context) => {
+  return (box, data, context) => {
     return context === 'decide' ? {} : {
       token: sign({
         type: 'user',

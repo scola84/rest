@@ -3,14 +3,7 @@ import { Worker } from '@scola/worker';
 export default class ObjectResolver extends Worker {
   constructor(methods) {
     super(methods);
-
-    this._filter = (request, data) => data.object;
     this._status = 200;
-  }
-
-  setFilter(value) {
-    this._filter = value;
-    return this;
   }
 
   setStatus(value) {
@@ -19,7 +12,7 @@ export default class ObjectResolver extends Worker {
   }
 
   act(request, data, callback) {
-    data = this._filter(request, data);
+    data = this.filter(request, data);
 
     if (typeof data === 'undefined') {
       throw new Error('404 Object not found');
@@ -29,5 +22,13 @@ export default class ObjectResolver extends Worker {
     response.status = this._status;
 
     this.pass(response, data, callback);
+  }
+
+  filter(request, data) {
+    if (this._filter) {
+      return this._filter(request, data);
+    }
+
+    return data.object;
   }
 }
