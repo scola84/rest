@@ -6,15 +6,23 @@ import {
   LinkInserter,
   LinkUpdater,
   ListSelector,
-  filterLinkSelector
+  filterLinkSelector,
+  filterQueryValidator
 } from '../helper';
 
 export default function createLink(structure, link) {
+  const actions = link.actions;
+
   const linkResolver = new ListResolver();
   const methodRouter = new MethodRouter();
 
   const deleteValidator = new Validator({
-    structure: [link]
+    structure: actions.del
+  });
+
+  const getValidator = new Validator({
+    filter: filterQueryValidator(),
+    structure: actions.get || []
   });
 
   const linkDeleter = new LinkDeleter({
@@ -35,11 +43,11 @@ export default function createLink(structure, link) {
   });
 
   const postValidator = new Validator({
-    structure: [link]
+    structure: actions.add
   });
 
   const putValidator = new Validator({
-    structure: [link]
+    structure: actions.edit
   });
 
   methodRouter
@@ -48,7 +56,8 @@ export default function createLink(structure, link) {
     .connect(linkResolver);
 
   methodRouter
-    .connect('GET', linkSelector)
+    .connect('GET', getValidator)
+    .connect(linkSelector)
     .connect(linkResolver);
 
   methodRouter
