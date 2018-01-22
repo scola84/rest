@@ -10,19 +10,17 @@ import {
   filterQueryValidator
 } from '../helper';
 
-export default function createLink(structure, link) {
-  const actions = link.actions;
-
+export default function createLink(structure, link, query = {}) {
   const linkResolver = new ListResolver();
   const methodRouter = new MethodRouter();
 
   const deleteValidator = new Validator({
-    structure: actions.del
+    structure: link.actions.del
   });
 
   const getValidator = new Validator({
     filter: filterQueryValidator(),
-    structure: actions.get || []
+    structure: link.actions.get || []
   });
 
   const linkDeleter = new LinkDeleter({
@@ -34,8 +32,8 @@ export default function createLink(structure, link) {
   });
 
   const linkSelector = new ListSelector({
-    id: 'rest-link-select',
-    filter: filterLinkSelector()
+    filter: filterLinkSelector(),
+    id: 'rest-link-select'
   });
 
   const linkUpdater = new LinkUpdater({
@@ -43,32 +41,40 @@ export default function createLink(structure, link) {
   });
 
   const postValidator = new Validator({
-    structure: actions.add
+    structure: link.actions.add
   });
 
   const putValidator = new Validator({
-    structure: actions.edit
+    structure: link.actions.edit
   });
 
-  methodRouter
-    .connect('DELETE', deleteValidator)
-    .connect(linkDeleter)
-    .connect(linkResolver);
+  if (query.del) {
+    methodRouter
+      .connect('DELETE', deleteValidator)
+      .connect(query.del(linkDeleter))
+      .connect(linkResolver);
+  }
 
-  methodRouter
-    .connect('GET', getValidator)
-    .connect(linkSelector)
-    .connect(linkResolver);
+  if (query.get) {
+    methodRouter
+      .connect('GET', getValidator)
+      .connect(query.get(linkSelector))
+      .connect(linkResolver);
+  }
 
-  methodRouter
-    .connect('POST', postValidator)
-    .connect(linkInserter)
-    .connect(linkResolver);
+  if (query.post) {
+    methodRouter
+      .connect('POST', postValidator)
+      .connect(query.post(linkInserter))
+      .connect(linkResolver);
+  }
 
-  methodRouter
-    .connect('PUT', putValidator)
-    .connect(linkUpdater)
-    .connect(linkResolver);
+  if (query.put) {
+    methodRouter
+      .connect('PUT', putValidator)
+      .connect(query.put(linkUpdater))
+      .connect(linkResolver);
+  }
 
   return [methodRouter, linkResolver];
 }

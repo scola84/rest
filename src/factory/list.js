@@ -19,7 +19,7 @@ import {
   filterRoleChecker
 } from '../helper';
 
-export default function createList(structure) {
+export default function createList(structure, query = {}) {
   const listResolver = new ListResolver();
   const methodRouter = new MethodRouter();
   const union = new Worker();
@@ -46,23 +46,27 @@ export default function createList(structure) {
   });
 
   const roleChecker = new RoleChecker({
-    filter: filterRoleChecker(structure.name, 'object')
+    filter: filterRoleChecker(structure.name, 'list')
   });
 
   roleChecker
     .connect(methodRouter);
 
-  methodRouter
-    .connect('GET', listValidator)
-    .connect(listSelector)
-    .connect(listResolver)
-    .connect(union);
+  if (query.get) {
+    methodRouter
+      .connect('GET', listValidator)
+      .connect(query.get(listSelector))
+      .connect(listResolver)
+      .connect(union);
+  }
 
-  methodRouter
-    .connect('POST', postValidator)
-    .connect(objectInserter)
-    .connect(objectResolver)
-    .connect(union);
+  if (query.post) {
+    methodRouter
+      .connect('POST', postValidator)
+      .connect(query.post(objectInserter))
+      .connect(objectResolver)
+      .connect(union);
+  }
 
   return [roleChecker, union];
 }

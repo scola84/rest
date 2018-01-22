@@ -12,7 +12,7 @@ import {
   mergeObjectSelector
 } from '../helper';
 
-export default function createBase(structure, link = {}) {
+export default function createBase(structure, query = {}) {
   const userChecker = new UserChecker();
 
   const getValidator = new Validator({
@@ -26,13 +26,13 @@ export default function createBase(structure, link = {}) {
   });
 
   const roleChecker = new RoleChecker({
-    filter: filterRoleChecker(structure.name, link.name || 'object')
+    filter: filterRoleChecker(structure.name, 'object')
   });
 
   getValidator
     .connect(userChecker)
     .connect(roleChecker)
-    .connect(objectSelector);
+    .connect(query.get(objectSelector));
 
   return [getValidator, objectSelector];
 }

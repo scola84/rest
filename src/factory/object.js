@@ -12,14 +12,14 @@ import {
 
 import createBase from './base';
 
-export default function createObject(structure) {
+export default function createObject(structure, query = {}) {
   const methodRouter = new MethodRouter();
   const objectResolver = new ObjectResolver();
 
   const [
     getValidator,
     objectSelector
-  ] = createBase(structure);
+  ] = createBase(structure, query);
 
   const objectDeleter = new ObjectUpdater({
     filter: filterObjectDeleter(structure.name),
@@ -37,17 +37,21 @@ export default function createObject(structure) {
   objectSelector
     .connect(methodRouter);
 
-  methodRouter
-    .connect('DELETE', objectDeleter)
-    .connect(objectResolver);
+  if (query.delete) {
+    methodRouter
+      .connect('DELETE', objectDeleter)
+      .connect(objectResolver);
+  }
 
   methodRouter
     .connect('GET', objectResolver);
 
-  methodRouter
-    .connect('PUT', putValidator)
-    .connect(objectUpdater)
-    .connect(objectResolver);
+  if (query.put) {
+    methodRouter
+      .connect('PUT', putValidator)
+      .connect(objectUpdater)
+      .connect(objectResolver);
+  }
 
   return [getValidator, objectResolver];
 }
