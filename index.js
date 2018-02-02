@@ -1,55 +1,27 @@
 import {
-  createBase,
-  createLink,
+  Deleter,
+  Inserter,
+  Selector,
+  Updater,
+  setDatabase,
+  filterPermission
+} from './src/helper';
+
+import {
   createList,
   createObject
 } from './src/factory';
 
-import {
-  LinkDeleter,
-  LinkInserter,
-  LinkReplacer,
-  LinkUpdater,
-  ListSelector,
-  ObjectDeleter,
-  ObjectInserter,
-  ObjectSelector,
-  ObjectUpdater,
-  filterIdResolver,
-  filterIdValidator,
-  filterLinkSelector,
-  filterObjectDeleter,
-  filterQueryValidator,
-  filterRoleChecker,
-  mergeLinkSelector,
-  mergeObjectSelector,
-  setDatabase
-} from './src/helper';
-
 export {
-  createBase,
-  createLink,
-  createList,
-  createObject
+  Deleter,
+  Inserter,
+  Selector,
+  Updater,
+  setDatabase,
+  filterPermission
 };
 
 export {
-  LinkDeleter,
-  LinkInserter,
-  LinkReplacer,
-  LinkUpdater,
-  ListSelector,
-  ObjectDeleter,
-  ObjectInserter,
-  ObjectSelector,
-  ObjectUpdater,
-  filterIdResolver,
-  filterIdValidator,
-  filterLinkSelector,
-  filterObjectDeleter,
-  filterQueryValidator,
-  filterRoleChecker,
-  mergeLinkSelector,
-  mergeObjectSelector,
-  setDatabase
+  createList,
+  createObject
 };

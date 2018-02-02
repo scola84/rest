@@ -2,71 +2,108 @@ import {
   ListResolver,
   MethodRouter,
   ObjectResolver,
-  RoleChecker
+  RoleChecker,
+  UserChecker
 } from '@scola/http';
 
 import {
-  ListSelector,
-  ObjectInserter
-} from '../helper';
+  Deleter,
+  Inserter,
+  Selector
+} from '@scola/rest';
 
 import { Validator } from '@scola/validator';
 import { Worker } from '@scola/worker';
 
 import {
-  filterIdResolver,
-  filterQueryValidator,
-  filterRoleChecker
+  filterAdd,
+  filterList,
+  mergeList
 } from '../helper';
 
-export default function createList(structure, query = {}) {
-  const listResolver = new ListResolver();
-  const methodRouter = new MethodRouter();
-  const union = new Worker();
-
-  const listSelector = new ListSelector({
-    id: 'rest-list-select'
+export default function createList(structure, query, helper) {
+  const deleter = new Deleter({
+    id: 'rest-list-deleter'
   });
 
-  const listValidator = new Validator({
-    filter: filterQueryValidator(),
-    structure: structure.list
+  const deleteValidator = new Validator({
+    id: 'rest-list-delete-validator',
+    structure: structure.del && structure.del.form
   });
 
-  const objectInserter = new ObjectInserter({
-    id: 'rest-object-insert'
+  const inserter = new Inserter({
+    id: 'rest-list-inserter'
   });
 
-  const objectResolver = new ObjectResolver({
-    filter: filterIdResolver(structure.name)
+  const insertResolver = new ObjectResolver({
+    id: 'rest-list-insert-resolver',
+    filter: filterAdd()
   });
 
-  const postValidator = new Validator({
-    structure: [structure.object.form]
+  const insertValidator = new Validator({
+    id: 'rest-list-insert-validator',
+    structure: structure.add && structure.add.form
+  });
+
+  const methodRouter = new MethodRouter({
+    id: 'rest-list-method-router'
   });
 
   const roleChecker = new RoleChecker({
-    filter: filterRoleChecker(structure.name, 'list')
+    filter: helper.permission('list'),
+    id: 'rest-list-role-checker'
   });
 
-  roleChecker
+  const selector = new Selector({
+    id: 'rest-list-selector',
+    type: 'list',
+    merge: mergeList()
+  });
+
+  const selectResolver = new ListResolver({
+    id: 'rest-list-select-resolver'
+  });
+
+  const selectValidator = new Validator({
+    id: 'rest-list-select-validator',
+    structure: structure.list && structure.list.query,
+    filter: filterList()
+  });
+
+  const union = new Worker({
+    id: 'rest-list-union'
+  });
+
+  const userChecker = new UserChecker({
+    id: 'rest-list-user-checker'
+  });
+
+  userChecker
+    .connect(roleChecker)
     .connect(methodRouter);
 
-  if (query.get) {
+  if (query.del) {
     methodRouter
-      .connect('GET', listValidator)
-      .connect(query.get(listSelector))
-      .connect(listResolver)
+      .connect('DELETE', deleteValidator)
+      .connect(query.del(deleter))
       .connect(union);
   }
 
-  if (query.post) {
+  if (query.list) {
     methodRouter
-      .connect('POST', postValidator)
-      .connect(query.post(objectInserter))
-      .connect(objectResolver)
+      .connect('GET', selectValidator)
+      .connect(query.list(selector))
+      .connect(selectResolver)
       .connect(union);
   }
 
-  return [roleChecker, union];
+  if (query.add) {
+    methodRouter
+      .connect('POST', insertValidator)
+      .connect(query.add(inserter))
+      .connect(insertResolver)
+      .connect(union);
+  }
+
+  return [userChecker, union];
 }
