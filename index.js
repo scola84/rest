@@ -4,7 +4,15 @@ import {
   Selector,
   Updater,
   setDatabase,
-  filterPermission
+  filterAdd,
+  filterList,
+  filterPermission,
+  filterView,
+  mergeLink,
+  mergeList,
+  mergeObject,
+  queryList,
+  queryObject
 } from './src/helper';
 
 import {
@@ -18,7 +26,15 @@ export {
   Selector,
   Updater,
   setDatabase,
-  filterPermission
+  filterAdd,
+  filterList,
+  filterPermission,
+  filterView,
+  mergeLink,
+  mergeList,
+  mergeObject,
+  queryList,
+  queryObject
 };
 
 export {

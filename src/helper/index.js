@@ -13,6 +13,8 @@ import filterView from './filter/view';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
 import mergeObject from './merge/object';
+import queryList from './query/list';
+import queryObject from './query/object';
 
 export {
   Deleter,
@@ -29,5 +31,7 @@ export {
   filterView,
   mergeLink,
   mergeList,
-  mergeObject
+  mergeObject,
+  queryList,
+  queryObject
 };

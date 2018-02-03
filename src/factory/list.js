@@ -21,7 +21,21 @@ import {
   mergeList
 } from '../helper';
 
-export default function createList(structure, query, helper) {
+export default function createList(structure, query) {
+  const adder = new Inserter({
+    id: 'rest-list-adder'
+  });
+
+  const addResolver = new ObjectResolver({
+    id: 'rest-list-add-resolver',
+    filter: filterAdd()
+  });
+
+  const addValidator = new Validator({
+    id: 'rest-list-add-validator',
+    structure: structure.add && structure.add.form
+  });
+
   const deleter = new Deleter({
     id: 'rest-list-deleter'
   });
@@ -31,18 +45,20 @@ export default function createList(structure, query, helper) {
     structure: structure.del && structure.del.form
   });
 
-  const inserter = new Inserter({
-    id: 'rest-list-inserter'
+  const getter = new Selector({
+    id: 'rest-list-getter',
+    type: 'list',
+    merge: mergeList()
   });
 
-  const insertResolver = new ObjectResolver({
-    id: 'rest-list-insert-resolver',
-    filter: filterAdd()
+  const getResolver = new ListResolver({
+    id: 'rest-list-get-resolver'
   });
 
-  const insertValidator = new Validator({
-    id: 'rest-list-insert-validator',
-    structure: structure.add && structure.add.form
+  const getValidator = new Validator({
+    id: 'rest-list-get-validator',
+    structure: structure.list && structure.list.query,
+    filter: filterList()
   });
 
   const methodRouter = new MethodRouter({
@@ -50,24 +66,8 @@ export default function createList(structure, query, helper) {
   });
 
   const roleChecker = new RoleChecker({
-    filter: helper.permission('list'),
+    filter: query.permission('list'),
     id: 'rest-list-role-checker'
-  });
-
-  const selector = new Selector({
-    id: 'rest-list-selector',
-    type: 'list',
-    merge: mergeList()
-  });
-
-  const selectResolver = new ListResolver({
-    id: 'rest-list-select-resolver'
-  });
-
-  const selectValidator = new Validator({
-    id: 'rest-list-select-validator',
-    structure: structure.list && structure.list.query,
-    filter: filterList()
   });
 
   const union = new Worker({
@@ -91,17 +91,17 @@ export default function createList(structure, query, helper) {
 
   if (query.list) {
     methodRouter
-      .connect('GET', selectValidator)
-      .connect(query.list(selector))
-      .connect(selectResolver)
+      .connect('GET', getValidator)
+      .connect(query.list(getter))
+      .connect(getResolver)
       .connect(union);
   }
 
   if (query.add) {
     methodRouter
-      .connect('POST', insertValidator)
-      .connect(query.add(inserter))
-      .connect(insertResolver)
+      .connect('POST', addValidator)
+      .connect(query.add(adder))
+      .connect(addResolver)
       .connect(union);
   }
 

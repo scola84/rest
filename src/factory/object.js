@@ -18,9 +18,19 @@ import {
   mergeObject
 } from '../helper';
 
-export default function createObject(structure, query, helper) {
-  const linkSelector = new Selector({
-    id: 'rest-object-link-selector',
+export default function createObject(structure, query) {
+
+  const editor = new Updater({
+    id: 'rest-object-editor'
+  });
+
+  const editValidator = new Validator({
+    id: 'rest-object-edit-validator',
+    structure: structure.edit && structure.edit.form
+  });
+
+  const linker = new Selector({
+    id: 'rest-object-linker',
     type: 'list',
     merge: mergeLink()
   });
@@ -35,16 +45,20 @@ export default function createObject(structure, query, helper) {
 
   const roleChecker = new RoleChecker({
     id: 'rest-object-role-checker',
-    filter: helper.permission('object')
+    filter: query.permission('object')
   });
 
-  const selector = new Selector({
-    id: 'rest-object-selector',
+  const userChecker = new UserChecker({
+    id: 'rest-object-user-checker'
+  });
+
+  const viewer = new Selector({
+    id: 'rest-object-viewer',
     merge: mergeObject()
   });
 
-  const selectValidator = new Validator({
-    id: 'rest-object-select-validator',
+  const viewValidator = new Validator({
+    id: 'rest-object-view-validator',
     structure: [{
       fields: [{
         name: 'id',
@@ -55,35 +69,22 @@ export default function createObject(structure, query, helper) {
     filter: filterView()
   });
 
-  const updater = new Updater({
-    id: 'rest-object-updater'
-  });
-
-  const updateValidator = new Validator({
-    id: 'rest-object-update-validator',
-    structure: structure.edit && structure.edit.form
-  });
-
-  const userChecker = new UserChecker({
-    id: 'rest-object-user-checker'
-  });
-
   userChecker
     .connect(roleChecker)
     .connect(methodRouter);
 
   if (query.view) {
     methodRouter
-      .connect('GET', selectValidator)
-      .connect(query.view(selector))
-      .connect(query.link ? query.link(linkSelector) : null)
+      .connect('GET', viewValidator)
+      .connect(query.view(viewer))
+      .connect(query.link ? query.link(linker) : null)
       .connect(objectResolver);
   }
 
   if (query.edit) {
     methodRouter
-      .connect('PUT', updateValidator)
-      .connect(query.edit(updater))
+      .connect('PUT', editValidator)
+      .connect(query.edit(editor))
       .connect(objectResolver);
   }
 
