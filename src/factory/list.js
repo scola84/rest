@@ -16,19 +16,19 @@ import { Validator } from '@scola/validator';
 import { Worker } from '@scola/worker';
 
 import {
-  filterAdd,
   filterList,
+  mergeAdd,
   mergeList
 } from '../helper';
 
 export default function createList(structure, query) {
   const adder = new Inserter({
-    id: 'rest-list-adder'
+    id: 'rest-list-adder',
+    merge: mergeAdd()
   });
 
   const addResolver = new ObjectResolver({
-    id: 'rest-list-add-resolver',
-    filter: filterAdd()
+    id: 'rest-list-add-resolver'
   });
 
   const addValidator = new Validator({
@@ -42,21 +42,20 @@ export default function createList(structure, query) {
 
   const deleteValidator = new Validator({
     id: 'rest-list-delete-validator',
-    structure: structure.del && structure.del.form
+    structure: structure.ldel && structure.ldel.form
   });
 
-  const getter = new Selector({
-    id: 'rest-list-getter',
-    type: 'list',
+  const lister = new Selector({
+    id: 'rest-lister',
     merge: mergeList()
   });
 
-  const getResolver = new ListResolver({
-    id: 'rest-list-get-resolver'
+  const listResolver = new ListResolver({
+    id: 'rest-list-resolver'
   });
 
-  const getValidator = new Validator({
-    id: 'rest-list-get-validator',
+  const listValidator = new Validator({
+    id: 'rest-list-validator',
     structure: structure.list && structure.list.query,
     filter: filterList()
   });
@@ -82,18 +81,18 @@ export default function createList(structure, query) {
     .connect(roleChecker)
     .connect(methodRouter);
 
-  if (query.del) {
+  if (query.ldel) {
     methodRouter
       .connect('DELETE', deleteValidator)
-      .connect(query.del(deleter))
+      .connect(query.ldel(deleter))
       .connect(union);
   }
 
   if (query.list) {
     methodRouter
-      .connect('GET', getValidator)
-      .connect(query.list(getter))
-      .connect(getResolver)
+      .connect('GET', listValidator)
+      .connect(query.list(lister))
+      .connect(listResolver)
       .connect(union);
   }
 

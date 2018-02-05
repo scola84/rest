@@ -1,10 +1,11 @@
 const map = {
   list: {
-    DELETE: 'delete',
+    DELETE: 'del',
     GET: 'list',
     POST: 'add'
   },
   object: {
+    DELETE: 'del',
     GET: 'view',
     PUT: 'edit'
   }

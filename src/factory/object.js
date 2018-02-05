@@ -6,6 +6,7 @@ import {
 } from '@scola/http';
 
 import {
+  Deleter,
   Selector,
   Updater
 } from '@scola/rest';
@@ -13,12 +14,21 @@ import {
 import { Validator } from '@scola/validator';
 
 import {
+  decideLink,
   filterView,
   mergeLink,
   mergeObject
 } from '../helper';
 
 export default function createObject(structure, query) {
+  const deleter = new Deleter({
+    id: 'rest-object-deleter'
+  });
+
+  const deleteValidator = new Validator({
+    id: 'rest-object-delete-validator',
+    structure: structure.odel && structure.odel.form
+  });
 
   const editor = new Updater({
     id: 'rest-object-editor'
@@ -30,8 +40,8 @@ export default function createObject(structure, query) {
   });
 
   const linker = new Selector({
+    decide: decideLink(),
     id: 'rest-object-linker',
-    type: 'list',
     merge: mergeLink()
   });
 
@@ -72,6 +82,13 @@ export default function createObject(structure, query) {
   userChecker
     .connect(roleChecker)
     .connect(methodRouter);
+
+  if (query.odel) {
+    methodRouter
+      .connect('DELETE', deleteValidator)
+      .connect(query.odel(deleter))
+      .connect(objectResolver);
+  }
 
   if (query.view) {
     methodRouter

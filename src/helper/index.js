@@ -6,10 +6,11 @@ import {
   setDatabase
 } from './database';
 
-import filterAdd from './filter/add';
+import decideLink from './decide/link';
 import filterList from './filter/list';
 import filterPermission from './filter/permission';
 import filterView from './filter/view';
+import mergeAdd from './merge/add';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
 import mergeObject from './merge/object';
@@ -25,10 +26,11 @@ export {
 };
 
 export {
-  filterAdd,
+  decideLink,
   filterList,
   filterPermission,
   filterView,
+  mergeAdd,
   mergeLink,
   mergeList,
   mergeObject,
