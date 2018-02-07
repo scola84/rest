@@ -27,7 +27,7 @@ export default function createObject(structure, query) {
 
   const deleteValidator = new Validator({
     id: 'rest-object-delete-validator',
-    structure: structure.odel && structure.odel.form
+    structure: structure.del && structure.del.form
   });
 
   const editor = new Updater({
@@ -83,10 +83,10 @@ export default function createObject(structure, query) {
     .connect(roleChecker)
     .connect(methodRouter);
 
-  if (query.odel) {
+  if (query.del) {
     methodRouter
       .connect('DELETE', deleteValidator)
-      .connect(query.odel(deleter))
+      .connect(query.del(deleter))
       .connect(objectResolver);
   }
 

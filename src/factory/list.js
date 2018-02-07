@@ -42,7 +42,7 @@ export default function createList(structure, query) {
 
   const deleteValidator = new Validator({
     id: 'rest-list-delete-validator',
-    structure: structure.ldel && structure.ldel.form
+    structure: structure.clr && structure.clr.form
   });
 
   const lister = new Selector({
@@ -81,10 +81,10 @@ export default function createList(structure, query) {
     .connect(roleChecker)
     .connect(methodRouter);
 
-  if (query.ldel) {
+  if (query.clr) {
     methodRouter
       .connect('DELETE', deleteValidator)
-      .connect(query.ldel(deleter))
+      .connect(query.clr(deleter))
       .connect(union);
   }
 
