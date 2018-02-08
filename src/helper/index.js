@@ -11,6 +11,7 @@ import filterList from './filter/list';
 import filterPermission from './filter/permission';
 import filterView from './filter/view';
 import mergeAdd from './merge/add';
+import mergeCheck from './merge/check';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
 import mergeObject from './merge/object';
@@ -31,6 +32,7 @@ export {
   filterPermission,
   filterView,
   mergeAdd,
+  mergeCheck,
   mergeLink,
   mergeList,
   mergeObject,
