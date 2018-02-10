@@ -40,6 +40,10 @@ export default function createList(structure, query) {
     id: 'rest-list-deleter'
   });
 
+  const deleteResolver = new ObjectResolver({
+    id: 'rest-list-delete-resolver'
+  });
+
   const deleteValidator = new Validator({
     id: 'rest-list-delete-validator',
     structure: structure.clr && structure.clr.form
@@ -85,6 +89,7 @@ export default function createList(structure, query) {
     methodRouter
       .connect('DELETE', deleteValidator)
       .connect(query.clr(deleter))
+      .connect(deleteResolver)
       .connect(union);
   }
 

@@ -9,7 +9,6 @@ import {
   filterPermission,
   filterView,
   mergeAdd,
-  mergeCheck,
   mergeLink,
   mergeList,
   mergeObject,
@@ -18,6 +17,7 @@ import {
 } from './src/helper';
 
 import {
+  createCheck,
   createList,
   createObject
 } from './src/factory';
@@ -33,7 +33,6 @@ export {
   filterPermission,
   filterView,
   mergeAdd,
-  mergeCheck,
   mergeLink,
   mergeList,
   mergeObject,
@@ -42,6 +41,7 @@ export {
 };
 
 export {
+  createCheck,
   createList,
   createObject
 };
