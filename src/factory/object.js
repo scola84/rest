@@ -42,7 +42,7 @@ export default function createObject(structure, query) {
   const linker = new Selector({
     decide: decideLink(),
     id: 'rest-object-linker',
-    merge: mergeLink()
+    merge: mergeLink(structure)
   });
 
   const methodRouter = new MethodRouter({

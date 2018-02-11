@@ -1,4 +1,5 @@
 import { Selector } from '@scola/rest';
+import { mergeCheck } from '../helper';
 
 export default function createCheck(child, ...parents) {
   const workers = [];
@@ -8,13 +9,7 @@ export default function createCheck(child, ...parents) {
   for (let i = 0; i < parents.length; i += 1) {
     parent = parents[i];
     worker = new Selector({
-      merge: (request, data, { result }) => {
-        if (result.length !== (request.body.count || 1)) {
-          throw new Error('403 Modification not allowed');
-        }
-
-        return data;
-      }
+      merge: mergeCheck()
     });
 
     workers[i] = parent.setup(worker);
