@@ -3,7 +3,7 @@ import filterPermission from '../filter/permission';
 
 export default function queryList(queries, options = {}) {
   options = defaults({}, options, {
-    permission: `${options.name}.self`
+    permission: `${options.object}.${options.object}`
   });
 
   return Object.assign({}, queries, {
