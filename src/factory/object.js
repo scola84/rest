@@ -71,6 +71,7 @@ export default function createObject(structure, query) {
     id: 'rest-object-view-validator',
     structure: [{
       fields: [{
+        array: true,
         name: 'id',
         required: true,
         type: 'integer'
