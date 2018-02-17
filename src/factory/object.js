@@ -53,6 +53,15 @@ export default function createObject(structure, query) {
     id: 'rest-object-resolver'
   });
 
+  const patcher = new Updater({
+    id: 'rest-object-patcher'
+  });
+
+  const patchValidator = new Validator({
+    id: 'rest-object-patch-validator',
+    structure: structure.patch && structure.patch.form
+  });
+
   const roleChecker = new RoleChecker({
     id: 'rest-object-role-checker',
     filter: query.permission('object')
@@ -103,6 +112,13 @@ export default function createObject(structure, query) {
     methodRouter
       .connect('PUT', editValidator)
       .connect(query.edit(editor))
+      .connect(objectResolver);
+  }
+
+  if (query.patch) {
+    methodRouter
+      .connect('PATCH', patchValidator)
+      .connect(query.patch(patcher))
       .connect(objectResolver);
   }
 

@@ -7,6 +7,7 @@ const map = {
   object: {
     DELETE: 'del',
     GET: 'view',
+    PATCH: 'edit',
     PUT: 'edit'
   }
 };
