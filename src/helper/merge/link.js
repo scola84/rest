@@ -1,6 +1,17 @@
 export default function mergeLink(structure) {
-  const fields = structure.view && structure.view.link ?
-    structure.view.link[0].fields.map((field) => field.name) : [];
+  const fields = [];
+
+  if (structure.view && structure.view.link) {
+    let link = null;
+
+    for (let i = 0; i < structure.view.link.length; i += 1) {
+      link = structure.view.link[i];
+
+      for (let j = 0; j < link.fields.length; j += 1) {
+        fields[fields.length] = link.fields[j].name;
+      }
+    }
+  }
 
   return (request, data, { result }) => {
     if (fields.length) {
