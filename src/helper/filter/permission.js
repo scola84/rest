@@ -2,7 +2,8 @@ const map = {
   list: {
     DELETE: 'del',
     GET: 'list',
-    POST: 'add'
+    POST: 'add',
+    PUT: 'edit'
   },
   object: {
     DELETE: 'del',
