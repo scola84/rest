@@ -1,7 +1,11 @@
 export default function mergeCheck(merge) {
   return (request, data, { result }) => {
-    if (result.length !== (request.body.count || 1)) {
-      throw new Error('403 Modification not allowed');
+    const count = typeof request.body.count === 'undefined' ?
+      1 : request.body.count;
+
+    if (result.length !== count) {
+      throw new Error('403 Modification not allowed' +
+        ` (expected ${count}, found ${result.length})`);
     }
 
     return merge ? merge(request, data, { result }) : data;
