@@ -1,4 +1,8 @@
 import {
+  FileWriter
+} from './src/file';
+
+import {
   Deleter,
   Inserter,
   Selector,
@@ -21,6 +25,10 @@ import {
   createList,
   createObject
 } from './src/factory';
+
+export {
+  FileWriter
+};
 
 export {
   Deleter,

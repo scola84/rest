@@ -15,7 +15,6 @@ import { Validator } from '@scola/validator';
 
 import {
   decideLink,
-  filterView,
   mergeLink,
   mergeObject
 } from '../helper';
@@ -50,7 +49,8 @@ export default function createObject(structure, query) {
   });
 
   const objectResolver = new ObjectResolver({
-    id: 'rest-object-resolver'
+    id: 'rest-object-resolver',
+    type: query.type
   });
 
   const patcher = new Updater({
@@ -73,20 +73,7 @@ export default function createObject(structure, query) {
 
   const viewer = new Selector({
     id: 'rest-object-viewer',
-    merge: mergeObject()
-  });
-
-  const viewValidator = new Validator({
-    id: 'rest-object-view-validator',
-    structure: [{
-      fields: [{
-        array: true,
-        name: 'id',
-        required: true,
-        type: 'integer'
-      }]
-    }],
-    filter: filterView()
+    merge: mergeObject(query.type)
   });
 
   userChecker
@@ -96,29 +83,28 @@ export default function createObject(structure, query) {
   if (query.del) {
     methodRouter
       .connect('DELETE', deleteValidator)
-      .connect(query.del(deleter))
+      .connect(query.del(deleter, query.config))
       .connect(objectResolver);
   }
 
   if (query.view) {
     methodRouter
-      .connect('GET', viewValidator)
-      .connect(query.view(viewer))
-      .connect(query.link ? query.link(linker) : null)
+      .connect('GET', query.view(viewer, query.config))
+      .connect(query.link ? query.link(linker, query.config) : null)
       .connect(objectResolver);
   }
 
   if (query.edit) {
     methodRouter
       .connect('PUT', editValidator)
-      .connect(query.edit(editor))
+      .connect(query.edit(editor, query.config))
       .connect(objectResolver);
   }
 
   if (query.patch) {
     methodRouter
       .connect('PATCH', patchValidator)
-      .connect(query.patch(patcher))
+      .connect(query.patch(patcher, query.config))
       .connect(objectResolver);
   }
 

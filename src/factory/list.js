@@ -88,7 +88,7 @@ export default function createList(structure, query) {
   if (query.clr) {
     methodRouter
       .connect('DELETE', deleteValidator)
-      .connect(query.clr(deleter))
+      .connect(query.clr(deleter, query.config))
       .connect(deleteResolver)
       .connect(union);
   }
@@ -96,7 +96,7 @@ export default function createList(structure, query) {
   if (query.list) {
     methodRouter
       .connect('GET', listValidator)
-      .connect(query.list(lister))
+      .connect(query.list(lister, query.config))
       .connect(listResolver)
       .connect(union);
   }
@@ -104,7 +104,7 @@ export default function createList(structure, query) {
   if (query.add) {
     methodRouter
       .connect('POST', addValidator)
-      .connect(query.add(adder))
+      .connect(query.add(adder, query.config))
       .connect(addResolver)
       .connect(union);
   }

@@ -3,10 +3,14 @@ import filterPermission from '../filter/permission';
 
 export default function queryObject(queries, options = {}) {
   options = defaults({}, options, {
-    permission: `${options.object}.${options.object}`
+    config: {},
+    permission: `${options.object}.${options.object}`,
+    type: 'data'
   });
 
   return Object.assign({}, queries, {
-    permission: filterPermission(options.permission)
+    config: options.config,
+    permission: filterPermission(options.permission),
+    type: options.type
   });
 }

@@ -1,5 +1,7 @@
-export default function mergeObject() {
+export default function mergeObject(type = 'data') {
   return (request, data, { result: [object] }) => {
-    return typeof object === 'undefined' ? object : { data: object };
+    return typeof object === 'undefined' ? object : {
+      [type]: object
+    };
   };
 }
