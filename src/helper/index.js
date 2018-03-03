@@ -17,6 +17,7 @@ import mergeList from './merge/list';
 import mergeObject from './merge/object';
 import queryList from './query/list';
 import queryObject from './query/object';
+import whereAuth from './where/auth';
 
 export {
   Deleter,
@@ -37,5 +38,6 @@ export {
   mergeList,
   mergeObject,
   queryList,
-  queryObject
+  queryObject,
+  whereAuth
 };

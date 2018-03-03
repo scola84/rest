@@ -13,11 +13,13 @@ import {
   filterPermission,
   filterView,
   mergeAdd,
+  mergeCheck,
   mergeLink,
   mergeList,
   mergeObject,
   queryList,
-  queryObject
+  queryObject,
+  whereAuth
 } from './src/helper';
 
 import {
@@ -41,11 +43,13 @@ export {
   filterPermission,
   filterView,
   mergeAdd,
+  mergeCheck,
   mergeLink,
   mergeList,
   mergeObject,
   queryList,
-  queryObject
+  queryObject,
+  whereAuth
 };
 
 export {
