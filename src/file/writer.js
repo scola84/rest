@@ -33,20 +33,18 @@ export default class FileWriter extends Worker {
   }
 
   act(request, data, callback) {
+    const input = this.filter(request, data);
     const date = Date.now();
     const files = [];
 
-    for (let i = 0; i < data.file.length; i += 1) {
-      const file = data.file[i];
+    for (let i = 0; i < input.length; i += 1) {
+      input[i].date = date;
+      input[i].path = this._basePath + date + '-' + shortid.generate();
 
-      file.created = date;
-      file.path = this._basePath + date + '-' + shortid.generate();
-
-      if (file.type.match(/^image\//) && this._resize.length > 0) {
-        files[files.length] = { file };
-        this._prepareResize(files, file);
+      if (input[i].type.match(/^image\//) && this._resize.length > 0) {
+        this._prepareResize(files, input[i]);
       } else {
-        files[files.length] = { file };
+        files[files.length] = { file: input[i] };
       }
     }
 
