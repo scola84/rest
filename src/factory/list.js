@@ -22,6 +22,8 @@ import {
 } from '../helper';
 
 export default function createList(structure, query) {
+  const begin = new Worker();
+
   const adder = new Inserter({
     id: 'rest-list-adder',
     merge: mergeAdd()
@@ -81,9 +83,15 @@ export default function createList(structure, query) {
     id: 'rest-list-user-checker'
   });
 
-  userChecker
-    .connect(roleChecker)
-    .connect(methodRouter);
+  if (query.check) {
+    begin
+      .connect(userChecker)
+      .connect(roleChecker)
+      .connect(methodRouter);
+  } else {
+    begin
+      .connect(methodRouter);
+  }
 
   if (query.clr) {
     methodRouter
@@ -109,5 +117,5 @@ export default function createList(structure, query) {
       .connect(union);
   }
 
-  return [userChecker, union];
+  return [begin, union];
 }

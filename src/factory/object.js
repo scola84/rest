@@ -12,6 +12,7 @@ import {
 } from '@scola/rest';
 
 import { Validator } from '@scola/validator';
+import { Worker } from '@scola/worker';
 
 import {
   decideLink,
@@ -20,6 +21,8 @@ import {
 } from '../helper';
 
 export default function createObject(structure, query) {
+  const begin = new Worker();
+
   const deleter = new Deleter({
     id: 'rest-object-deleter'
   });
@@ -76,10 +79,15 @@ export default function createObject(structure, query) {
     merge: mergeObject(query.type)
   });
 
-  userChecker
-    .connect(roleChecker)
-    .connect(methodRouter);
-
+  if (query.check) {
+    begin
+      .connect(userChecker)
+      .connect(roleChecker)
+      .connect(methodRouter);
+  } else {
+    begin
+      .connect(methodRouter);
+  }
   if (query.del) {
     methodRouter
       .connect('DELETE', deleteValidator)
