@@ -1,6 +1,8 @@
 import {
-  FileWriter
-} from './src/file';
+  FileWriter,
+  MailWriter,
+  SmsWriter,
+} from './src/writer';
 
 import {
   Deleter,
@@ -29,7 +31,9 @@ import {
 } from './src/factory';
 
 export {
-  FileWriter
+  FileWriter,
+  MailWriter,
+  SmsWriter
 };
 
 export {

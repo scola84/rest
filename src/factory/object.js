@@ -116,5 +116,5 @@ export default function createObject(structure, query) {
       .connect(objectResolver);
   }
 
-  return [userChecker, objectResolver];
+  return [begin, objectResolver];
 }

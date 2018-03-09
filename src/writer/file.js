@@ -1,8 +1,8 @@
 import { Worker } from '@scola/worker';
+import each from 'async/each';
 import { createReadStream, createWriteStream } from 'fs';
 import sharp from 'sharp';
 import shortid from 'shortid';
-import each from 'async/each';
 
 export default class FileWriter extends Worker {
   constructor(options = {}) {
