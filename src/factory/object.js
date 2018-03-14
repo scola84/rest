@@ -69,7 +69,7 @@ export default function createObject(structure, query) {
       .connect(objectResolver);
   }
 
-  if (structure.view && query.view) {
+  if (query.view) {
     const linker = new Selector({
       decide: decideLink(),
       id: 'rest-object-linker',
