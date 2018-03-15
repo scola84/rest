@@ -1,5 +1,6 @@
 export default function filterData(defaultValue = {}) {
   return (request, data = {}) => {
-    return data.data || defaultValue;
+    return request.body.type === 'multipart/form-data' ?
+      data : data.data || defaultValue;
   };
 }

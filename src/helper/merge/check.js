@@ -8,6 +8,8 @@ export default function mergeCheck(merge) {
         ` (expected ${count}, found ${result.length})`);
     }
 
-    return merge ? merge(request, data, { result }) : { data };
+    return merge ? merge(request, data, { result }) :
+      (request.body.type === 'multipart/form-data' ?
+        data : { data });
   };
 }
