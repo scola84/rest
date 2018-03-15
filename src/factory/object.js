@@ -16,6 +16,7 @@ import { Worker } from '@scola/worker';
 
 import {
   decideLink,
+  filterData,
   mergeLink,
   mergeObject
 } from '../helper';
@@ -55,10 +56,12 @@ export default function createObject(structure, query) {
 
   if (structure.del && query.del) {
     const deleter = new Deleter({
+      filter: structure.del.filter || filterData(),
       id: 'rest-object-deleter'
     });
 
     const deleteValidator = new Validator({
+      filter: structure.del.filter || filterData(),
       id: 'rest-object-delete-validator',
       structure: structure.del.form
     });
@@ -89,10 +92,12 @@ export default function createObject(structure, query) {
 
   if (structure.edit && query.edit) {
     const editor = new Updater({
+      filter: structure.edit.filter || filterData(),
       id: 'rest-object-editor'
     });
 
     const editValidator = new Validator({
+      filter: structure.edit.filter || filterData(),
       id: 'rest-object-edit-validator',
       structure: structure.edit.form
     });
@@ -105,10 +110,12 @@ export default function createObject(structure, query) {
 
   if (structure.patch && query.patch) {
     const patcher = new Updater({
+      filter: structure.patch.filter || filterData(),
       id: 'rest-object-patcher'
     });
 
     const patchValidator = new Validator({
+      filter: structure.patch.filter || filterData(),
       id: 'rest-object-patch-validator',
       structure: structure.patch.form
     });

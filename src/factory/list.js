@@ -16,6 +16,7 @@ import { Validator } from '@scola/validator';
 import { Worker } from '@scola/worker';
 
 import {
+  filterData,
   filterList,
   mergeAdd,
   mergeList
@@ -55,6 +56,7 @@ export default function createList(structure, query) {
 
   if (structure.clr && query.clr) {
     const deleter = new Deleter({
+      filter: structure.clr.filter || filterData(),
       id: 'rest-list-deleter'
     });
 
@@ -63,6 +65,7 @@ export default function createList(structure, query) {
     });
 
     const deleteValidator = new Validator({
+      filter: structure.clr.filter || filterData(),
       id: 'rest-list-delete-validator',
       structure: structure.clr.form
     });
@@ -99,6 +102,7 @@ export default function createList(structure, query) {
 
   if (structure.add && query.add) {
     const adder = new Inserter({
+      filter: structure.add.filter || filterData(),
       id: 'rest-list-adder',
       merge: mergeAdd()
     });
@@ -108,6 +112,7 @@ export default function createList(structure, query) {
     });
 
     const addValidator = new Validator({
+      filter: structure.add.filter || filterData(),
       id: 'rest-list-add-validator',
       structure: structure.add.form
     });

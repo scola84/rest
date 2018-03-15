@@ -1,5 +1,5 @@
 import { Selector } from '@scola/rest';
-import { mergeCheck } from '../helper';
+import { filterData, mergeCheck } from '../helper';
 
 export default function createCheck(child, ...parents) {
   const workers = [];
@@ -9,6 +9,7 @@ export default function createCheck(child, ...parents) {
   for (let i = 0; i < parents.length; i += 1) {
     parent = parents[i];
     worker = new Selector({
+      filter: filterData(),
       merge: mergeCheck(parent.merge)
     });
 
