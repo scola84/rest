@@ -1,4 +1,4 @@
-export default function whereAuth(object, names = [], owner = false) {
+export default function whereAuth(object, names = []) {
   return (request) => {
     if (request.user.may(object + '.sudo') === true) {
       return null;
@@ -12,11 +12,7 @@ export default function whereAuth(object, names = [], owner = false) {
         return null;
       }
 
-      values[values.length] = parents[names[i]];
-    }
-
-    if (owner === false || values.length === 0) {
-      values[values.length] = request.user.getId();
+      values[values.length] = String(parents[names[i]]);
     }
 
     return values;
