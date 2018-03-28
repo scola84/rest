@@ -5,16 +5,13 @@ export default function whereAuth(object, names = []) {
     }
 
     const parents = request.user.getParents();
-    const values = [];
 
     for (let i = 0; i < names.length; i += 1) {
-      if (parents[names[i]] && i < names.length - 1) {
-        return null;
+      if (parents[names[i]]) {
+        return i < names.length - 1 ? null : [parents[names[i]]];
       }
-
-      values[values.length] = String(parents[names[i]]);
     }
 
-    return values;
+    return null;
   };
 }
