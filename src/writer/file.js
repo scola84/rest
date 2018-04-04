@@ -1,6 +1,7 @@
 import { Worker } from '@scola/worker';
 import each from 'async/each';
 import { createReadStream, createWriteStream } from 'fs';
+import { ensureDirSync } from 'fs-extra';
 import sharp from 'sharp';
 import shortid from 'shortid';
 
@@ -19,6 +20,8 @@ export default class FileWriter extends Worker {
 
   setBasePath(value = '/tmp/') {
     this._basePath = value;
+    ensureDirSync(this._basePath);
+
     return this;
   }
 

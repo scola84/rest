@@ -12,6 +12,7 @@
     "@scola/validator": "^11.0.0",
     "@scola/worker": "^2.1.0",
     "async": "^2.6.0",
+    "fs-extra": "^5.0.0",
     "lodash-es": "^4.17.7",
     "marked": "^0.3.19",
     "messagebird": "^2.1.4",
