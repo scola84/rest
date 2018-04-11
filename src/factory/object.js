@@ -18,7 +18,8 @@ import {
   decideLink,
   filterData,
   mergeLink,
-  mergeObject
+  mergeObject,
+  mergeValidator
 } from '../helper';
 
 export default function createObject(structure, query) {
@@ -63,6 +64,7 @@ export default function createObject(structure, query) {
     const deleteValidator = new Validator({
       filter: structure.del.filter || filterData(),
       id: 'rest-object-delete-validator',
+      merge: mergeValidator(),
       structure: structure.del.form
     });
 
@@ -99,6 +101,7 @@ export default function createObject(structure, query) {
     const editValidator = new Validator({
       filter: structure.edit.filter || filterData(),
       id: 'rest-object-edit-validator',
+      merge: mergeValidator(),
       structure: structure.edit.form
     });
 
@@ -117,6 +120,7 @@ export default function createObject(structure, query) {
     const patchValidator = new Validator({
       filter: structure.patch.filter || filterData(),
       id: 'rest-object-patch-validator',
+      merge: mergeValidator(),
       structure: structure.patch.form
     });
 

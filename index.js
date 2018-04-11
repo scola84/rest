@@ -21,6 +21,7 @@ import {
   mergeLink,
   mergeList,
   mergeObject,
+  mergeValidator,
   queryList,
   queryObject,
   whereAuth
@@ -55,6 +56,7 @@ export {
   mergeLink,
   mergeList,
   mergeObject,
+  mergeValidator,
   queryList,
   queryObject,
   whereAuth

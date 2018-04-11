@@ -19,7 +19,8 @@ import {
   filterData,
   filterList,
   mergeAdd,
-  mergeList
+  mergeList,
+  mergeValidator
 } from '../helper';
 
 export default function createList(structure, query) {
@@ -67,6 +68,7 @@ export default function createList(structure, query) {
     const deleteValidator = new Validator({
       filter: structure.clr.filter || filterData(),
       id: 'rest-list-delete-validator',
+      merge: mergeValidator(),
       structure: structure.clr.form
     });
 
@@ -108,12 +110,14 @@ export default function createList(structure, query) {
     });
 
     const addResolver = new ObjectResolver({
-      id: 'rest-list-add-resolver'
+      id: 'rest-list-add-resolver',
+      status: 201
     });
 
     const addValidator = new Validator({
       filter: structure.add.filter || filterData(),
       id: 'rest-list-add-validator',
+      merge: mergeValidator(),
       structure: structure.add.form
     });
 

@@ -16,6 +16,7 @@ import mergeCheck from './merge/check';
 import mergeData from './merge/data';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
+import mergeValidator from './merge/validator';
 import mergeObject from './merge/object';
 import queryList from './query/list';
 import queryObject from './query/object';
@@ -41,6 +42,7 @@ export {
   mergeLink,
   mergeList,
   mergeObject,
+  mergeValidator,
   queryList,
   queryObject,
   whereAuth
