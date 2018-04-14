@@ -1,5 +1,5 @@
 export default function mergeCheck(merge) {
-  return (request, data, { result }) => {
+  return (request, data, { query, result }) => {
     const count = typeof request.body.count === 'undefined' ?
       1 : request.body.count;
 
@@ -8,7 +8,7 @@ export default function mergeCheck(merge) {
         ` (expected ${count}, found ${result.length})`);
     }
 
-    return merge ? merge(request, data, { result }) :
+    return merge ? merge(request, data, { query, result }) :
       (request.body.type === 'multipart/form-data' ?
         data : { data });
   };
