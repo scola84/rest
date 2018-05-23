@@ -12,12 +12,14 @@ import {
   setDatabase,
   decideLink,
   filterData,
+  filterImport,
   filterList,
   filterPermission,
   filterView,
   mergeAdd,
   mergeCheck,
   mergeData,
+  mergeImport,
   mergeLink,
   mergeList,
   mergeObject,
@@ -29,6 +31,7 @@ import {
 
 import {
   createCheck,
+  createImport,
   createList,
   createObject
 } from './src/factory';
@@ -47,12 +50,14 @@ export {
   setDatabase,
   decideLink,
   filterData,
+  filterImport,
   filterList,
   filterPermission,
   filterView,
   mergeAdd,
   mergeCheck,
   mergeData,
+  mergeImport,
   mergeLink,
   mergeList,
   mergeObject,
@@ -64,6 +69,7 @@ export {
 
 export {
   createCheck,
+  createImport,
   createList,
   createObject
 };
