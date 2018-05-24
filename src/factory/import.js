@@ -27,7 +27,7 @@ import {
   mergeUnique
 } from '../helper';
 
-export default function createImport(structure, query, map) {
+export default function createImport(structure, query, imprt) {
   const importBroadcaster = new Broadcaster({
     id: 'rest-import-import-broadcaster',
     name: 'import',
@@ -55,11 +55,11 @@ export default function createImport(structure, query, map) {
   let unique = null;
   let validator = null;
 
-  const names = Object.keys(map);
+  const names = Object.keys(imprt);
 
   for (let i = 0; i < names.length; i += 1) {
     name = names[i];
-    subs = Object.keys(map[name]);
+    subs = Object.keys(imprt[name]);
 
     for (let j = 0; j < subs.length; j += 1) {
       sub = subs[j];
@@ -80,7 +80,7 @@ export default function createImport(structure, query, map) {
 
       importer = new Importer({
         id: 'rest-import-importer',
-        map: map[name][sub],
+        map: imprt[name][sub],
         name,
         sub
       });

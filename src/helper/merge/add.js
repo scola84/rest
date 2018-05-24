@@ -8,7 +8,7 @@ export default function mergeAdd() {
 
     return {
       data: {
-        [key]: result.insertId
+        [key.name]: result.insertId
       }
     };
   };

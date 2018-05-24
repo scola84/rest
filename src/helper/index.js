@@ -12,11 +12,9 @@ import filterData from './filter/data';
 import filterImport from './filter/import';
 import filterList from './filter/list';
 import filterPermission from './filter/permission';
-import filterView from './filter/view';
 import mergeAdd from './merge/add';
 import mergeCheck from './merge/check';
 import mergeData from './merge/data';
-import mergeEdit from './merge/edit';
 import mergeImport from './merge/import';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
@@ -42,11 +40,9 @@ export {
   filterImport,
   filterList,
   filterPermission,
-  filterView,
   mergeAdd,
   mergeCheck,
   mergeData,
-  mergeEdit,
   mergeImport,
   mergeLink,
   mergeList,
