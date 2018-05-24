@@ -1,6 +1,6 @@
 export default function decideImport(checkMeta = false, checkForce = false) {
-  return (request, data) => {
-    const load = request.load === true;
+  return (box, data) => {
+    const load = box.import.load === true;
 
     let meta = true;
     let force = true;
@@ -13,7 +13,7 @@ export default function decideImport(checkMeta = false, checkForce = false) {
     }
 
     if (checkForce === true) {
-      force = request.force === true;
+      force = box.import.force === true;
     }
 
     return load && meta && force;

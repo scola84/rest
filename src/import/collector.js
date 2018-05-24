@@ -22,7 +22,7 @@ export default class Collector extends Worker {
   }
 
   act(box, data, callback) {
-    if (box.load === true) {
+    if (box.import.load === true) {
       this._collect(box, data);
     }
 

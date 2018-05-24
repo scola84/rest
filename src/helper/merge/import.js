@@ -3,8 +3,8 @@ export default function mergeImport() {
     box = Object.assign({
       begin,
       data,
-      force: box.box.box.force,
-      load: box.box.box.load
+      import: box.box.box.import,
+      user: box.box.box.user
     }, box);
 
     return [box, { data: items.slice(begin, end).pop() }];
