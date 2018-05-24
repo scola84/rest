@@ -1,16 +1,16 @@
 import {
-  Broadcaster,
-  Slicer,
-  Unifier
-} from '@scola/worker';
-
-import { Validator } from '@scola/validator';
-
-import {
   Inserter,
   Selector,
   Updater
 } from '@scola/rest';
+
+import { Validator } from '@scola/validator';
+
+import {
+  Broadcaster,
+  Slicer,
+  Unifier
+} from '@scola/worker';
 
 import {
   Collector,
@@ -22,7 +22,7 @@ import {
   filterData,
   filterImport,
   mergeAdd,
-  mergeEdit,
+  mergeData,
   mergeImport,
   mergeUnique
 } from '../helper';
@@ -121,7 +121,7 @@ export default function createImport(structure, query, map) {
           decide: decideImport(true, true),
           filter: filterData({}, false),
           id: 'rest-import-editor',
-          merge: mergeEdit()
+          merge: mergeData()
         });
       }
 
@@ -130,7 +130,7 @@ export default function createImport(structure, query, map) {
           decide: decideImport(),
           filter: filterData({}, false),
           id: 'rest-import-unique',
-          merge: mergeUnique()
+          merge: mergeUnique(true)
         });
       }
 

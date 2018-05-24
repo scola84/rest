@@ -2,6 +2,7 @@ export default function mergeImport() {
   return (box, data, items, begin, end) => {
     box = Object.assign({
       begin,
+      body: {},
       data,
       import: box.box.box.import,
       user: box.box.box.user

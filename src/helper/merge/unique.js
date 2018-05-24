@@ -1,12 +1,16 @@
-export default function mergeUnique() {
+export default function mergeUnique(addData = false) {
   return (request, data, { result: [object] }) => {
     if (typeof object === 'undefined') {
-      return data;
+      return { data };
     }
 
+    const id = Object.values(object).pop();
+
+    request.params = [null].concat(String(id).split(','));
+    request.exists = true;
+
     return {
-      meta: Object.assign({ exists: true }, object),
-      data: Object.assign({}, object, data)
+      data: Object.assign({}, object, addData ? data : {})
     };
   };
 }

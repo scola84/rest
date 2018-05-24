@@ -36,8 +36,9 @@ export default class Collector extends Worker {
   }
 
   _collect(box, data) {
-    if (data.meta && data.meta.id) {
-      box.data.output[this._name][this._sub][box.begin].id = data.meta.id;
-    }
+    box.data.output[this._name][this._sub][box.begin] = Object.assign({},
+      data.data,
+      box.data.output[this._name][this._sub][box.begin]
+    );
   }
 }
