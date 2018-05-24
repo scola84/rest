@@ -20,7 +20,7 @@ import {
   mergeImport
 } from '../helper';
 
-export default function createImport(structure, query, map, config) {
+export default function createImport(structure, query, map) {
   const importBroadcaster = new Broadcaster({
     id: 'rest-import-import-broadcaster',
     name: 'import',
@@ -91,7 +91,7 @@ export default function createImport(structure, query, map, config) {
       slicer = new Slicer({
         filter: filterImport(name, sub),
         id: 'rest-import-slicer',
-        merge: mergeImport(name, sub, config),
+        merge: mergeImport(),
         name: name + sub,
         wrap: true
       });
