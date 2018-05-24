@@ -22,7 +22,7 @@ export default class Collector extends Worker {
   }
 
   act(box, data, callback) {
-    if (box.box.box.load === true) {
+    if (box.load === true) {
       this._collect(box, data);
     }
 
@@ -36,8 +36,8 @@ export default class Collector extends Worker {
   }
 
   _collect(box, data) {
-    if (data.data && data.data.id) {
-      box.data.output[this._name][this._sub][box.begin].id = data.data.id;
+    if (data.meta && data.meta.id) {
+      box.data.output[this._name][this._sub][box.begin].id = data.meta.id;
     }
   }
 }

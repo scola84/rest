@@ -1,13 +1,16 @@
 import {
   Broadcaster,
-  Router,
   Slicer,
-  Unifier,
-  Worker
+  Unifier
 } from '@scola/worker';
 
 import { Validator } from '@scola/validator';
-import { Inserter } from '@scola/rest';
+
+import {
+  Inserter,
+  Selector,
+  Updater
+} from '@scola/rest';
 
 import {
   Collector,
@@ -15,9 +18,13 @@ import {
 } from '../import';
 
 import {
+  decideImport,
+  filterData,
   filterImport,
   mergeAdd,
-  mergeImport
+  mergeEdit,
+  mergeImport,
+  mergeUnique
 } from '../helper';
 
 export default function createImport(structure, query, map) {
@@ -39,14 +46,13 @@ export default function createImport(structure, query, map) {
   let subQuery = null;
   let subStructure = null;
 
+  let adder = null;
   let collector = null;
+  let editor = null;
   let importer = null;
-  let inserter = null;
-  let passthrough = null;
-  let router = null;
   let slicer = null;
-  let tester = null;
   let unifier = null;
+  let unique = null;
   let validator = null;
 
   const names = Object.keys(map);
@@ -58,7 +64,9 @@ export default function createImport(structure, query, map) {
     for (let j = 0; j < subs.length; j += 1) {
       sub = subs[j];
 
-      inserter = null;
+      adder = null;
+      editor = null;
+      unique = null;
       validator = null;
 
       subStructure = structure[name] && structure[name][sub];
@@ -77,33 +85,12 @@ export default function createImport(structure, query, map) {
         sub
       });
 
-      passthrough = new Worker({
-        id: 'rest-import-passthrough'
-      });
-
-      router = new Router({
-        filter: (box) => {
-          return box.box.box.load ? 'load' : 'test';
-        },
-        id: 'rest-import-router'
-      });
-
       slicer = new Slicer({
         filter: filterImport(name, sub),
         id: 'rest-import-slicer',
         merge: mergeImport(),
         name: name + sub,
         wrap: true
-      });
-
-      tester = new Worker({
-        act(box, data, callback) {
-          this.pass(box, data, callback);
-        },
-        err(box, error, callback) {
-          this.fail(box, error, callback);
-        },
-        id: 'rest-import-tester'
       });
 
       unifier = new Unifier({
@@ -114,15 +101,36 @@ export default function createImport(structure, query, map) {
 
       if (subStructure && subStructure.add) {
         validator = new Validator({
+          filter: filterData({}, false),
           id: 'rest-import-validator',
           structure: subStructure.add.form
         });
       }
 
       if (subQuery && subQuery.add) {
-        inserter = new Inserter({
+        adder = new Inserter({
+          decide: decideImport(null),
+          filter: filterData({}, false),
           id: 'rest-import-adder',
           merge: mergeAdd()
+        });
+      }
+
+      if (subQuery && subQuery.edit) {
+        editor = new Updater({
+          decide: decideImport(true, true),
+          filter: filterData({}, false),
+          id: 'rest-import-editor',
+          merge: mergeEdit()
+        });
+      }
+
+      if (subQuery && subQuery.unique) {
+        unique = new Selector({
+          decide: decideImport(),
+          filter: filterData({}, false),
+          id: 'rest-import-unique',
+          merge: mergeUnique()
         });
       }
 
@@ -130,18 +138,10 @@ export default function createImport(structure, query, map) {
         .connect(importer)
         .connect(slicer)
         .connect(validator)
-        .connect(router);
-
-      router
-        .connect('load', passthrough)
-        .connect(inserter ? subQuery.add(inserter) : null)
-        .connect(collector);
-
-      router
-        .connect('test', tester)
-        .connect(collector);
-
-      collector
+        .connect(unique ? subQuery.unique(unique, {}, false) : null)
+        .connect(adder ? subQuery.add(adder, {}, false) : null)
+        .connect(editor ? subQuery.edit(editor, {}, false) : null)
+        .connect(collector)
         .connect(unifier)
         .connect(importUnifier);
     }

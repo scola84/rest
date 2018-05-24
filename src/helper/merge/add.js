@@ -1,7 +1,7 @@
 export default function mergeAdd() {
   return (request, data, { result }) => {
     return {
-      data: {
+      meta: {
         id: result.insertId
       }
     };

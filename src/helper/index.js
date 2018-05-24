@@ -7,6 +7,7 @@ import {
 } from './database';
 
 import decideLink from './decide/link';
+import decideImport from './decide/import';
 import filterData from './filter/data';
 import filterImport from './filter/import';
 import filterList from './filter/list';
@@ -15,9 +16,11 @@ import filterView from './filter/view';
 import mergeAdd from './merge/add';
 import mergeCheck from './merge/check';
 import mergeData from './merge/data';
+import mergeEdit from './merge/edit';
 import mergeImport from './merge/import';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
+import mergeUnique from './merge/unique';
 import mergeValidator from './merge/validator';
 import mergeObject from './merge/object';
 import queryList from './query/list';
@@ -34,6 +37,7 @@ export {
 
 export {
   decideLink,
+  decideImport,
   filterData,
   filterImport,
   filterList,
@@ -42,10 +46,12 @@ export {
   mergeAdd,
   mergeCheck,
   mergeData,
+  mergeEdit,
   mergeImport,
   mergeLink,
   mergeList,
   mergeObject,
+  mergeUnique,
   mergeValidator,
   queryList,
   queryObject,
