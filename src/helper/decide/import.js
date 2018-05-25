@@ -1,5 +1,5 @@
-export default function decideImport(checkExists = false, checkForce = false) {
-  return (box) => {
+export default function decideImport(checkExists, checkForce, key) {
+  return (box, data) => {
     const load = box.import.load === true;
 
     let exists = true;
@@ -13,6 +13,10 @@ export default function decideImport(checkExists = false, checkForce = false) {
 
     if (checkForce === true) {
       force = box.import.force === true;
+    }
+
+    if (key) {
+      box.params = [null].concat(key(box, data.data));
     }
 
     return load && exists && force;

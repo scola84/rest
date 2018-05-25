@@ -4,13 +4,12 @@ export default function mergeUnique(addData = false) {
       return { data };
     }
 
-    const id = Object.values(object).pop();
-
-    request.params = [null].concat(String(id).split(','));
     request.exists = true;
 
-    return {
-      data: Object.assign({}, object, addData ? data : {})
-    };
+    data = Object.assign({
+      exists: true
+    }, object, addData ? data : {});
+
+    return { data };
   };
 }

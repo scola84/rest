@@ -109,7 +109,7 @@ export default function createImport(structure, query, imprt) {
 
       if (subQuery && subQuery.add) {
         adder = new Inserter({
-          decide: decideImport(null),
+          decide: decideImport(null, false, imprt[name][sub].key),
           filter: filterData({}, false),
           id: 'rest-import-adder',
           merge: mergeAdd()
@@ -118,16 +118,18 @@ export default function createImport(structure, query, imprt) {
 
       if (subQuery && subQuery.edit) {
         editor = new Updater({
-          decide: decideImport(true, true),
+          decide: decideImport(true, true, imprt[name][sub].key),
           filter: filterData({}, false),
           id: 'rest-import-editor',
           merge: mergeData()
         });
+
+        editor.set({ any: true });
       }
 
       if (subQuery && subQuery.unique) {
         unique = new Selector({
-          decide: decideImport(),
+          decide: decideImport(false, false),
           filter: filterData({}, false),
           id: 'rest-import-unique',
           merge: mergeUnique(true)
@@ -138,9 +140,9 @@ export default function createImport(structure, query, imprt) {
         .connect(importer)
         .connect(slicer)
         .connect(validator)
-        .connect(unique ? subQuery.unique(unique, {}, false) : null)
-        .connect(adder ? subQuery.add(adder, {}, false) : null)
-        .connect(editor ? subQuery.edit(editor, {}, false) : null)
+        .connect(unique ? subQuery.unique(unique) : null)
+        .connect(adder ? subQuery.add(adder) : null)
+        .connect(editor ? subQuery.edit(editor) : null)
         .connect(collector)
         .connect(unifier)
         .connect(importUnifier);
