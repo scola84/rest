@@ -129,7 +129,7 @@ export default function createImport(structure, query, imprt) {
 
       if (subQuery && subQuery.unique) {
         unique = new Selector({
-          decide: decideImport(false, false),
+          decide: decideImport(false, false, imprt[name][sub].key),
           filter: filterData({}, false),
           id: 'rest-import-unique',
           merge: mergeUnique(true)
