@@ -1,5 +1,5 @@
-export default function filterImport(name, sub) {
+export default function filterImport(object, name) {
   return (box, data) => {
-    return data.output[name][sub];
+    return data.output[object][name];
   };
 }

@@ -40,11 +40,11 @@ export default function createImport(structure, query, imprt) {
     wrap: true
   });
 
+  let object = null;
   let name = null;
-  let sub = null;
-  let subs = null;
-  let subQuery = null;
-  let subStructure = null;
+  let names = null;
+  let objectQuery = null;
+  let objectStructure = null;
 
   let adder = null;
   let collector = null;
@@ -55,70 +55,70 @@ export default function createImport(structure, query, imprt) {
   let unique = null;
   let validator = null;
 
-  const names = Object.keys(imprt);
+  const objects = Object.keys(imprt);
 
-  for (let i = 0; i < names.length; i += 1) {
-    name = names[i];
-    subs = Object.keys(imprt[name]);
+  for (let i = 0; i < objects.length; i += 1) {
+    object = objects[i];
+    names = Object.keys(imprt[object]);
 
-    for (let j = 0; j < subs.length; j += 1) {
-      sub = subs[j];
+    for (let j = 0; j < names.length; j += 1) {
+      name = names[j];
 
       adder = null;
       editor = null;
       unique = null;
       validator = null;
 
-      subStructure = structure[name] && structure[name][sub];
-      subQuery = query[name] && query[name][sub];
+      objectStructure = structure[object] && structure[object][name];
+      objectQuery = query[object] && query[object][name];
 
       collector = new Collector({
         id: 'rest-import-collector',
         name,
-        sub
+        object
       });
 
       importer = new Importer({
         id: 'rest-import-importer',
-        map: imprt[name][sub],
+        map: imprt[object][name],
         name,
-        sub
+        object
       });
 
       slicer = new Slicer({
-        filter: filterImport(name, sub),
+        filter: filterImport(object, name),
         id: 'rest-import-slicer',
         merge: mergeImport(),
-        name: name + sub,
+        name: object + name,
         wrap: true
       });
 
       unifier = new Unifier({
         id: 'rest-import-unifier',
-        name: name + sub,
+        name: object + name,
         wrap: true
       });
 
-      if (subStructure && subStructure.add) {
+      if (objectStructure && objectStructure.add) {
         validator = new Validator({
           filter: filterData({}, false),
           id: 'rest-import-validator',
-          structure: subStructure.add.form
+          structure: objectStructure.add.form
         });
       }
 
-      if (subQuery && subQuery.add) {
+      if (objectQuery && objectQuery.add) {
         adder = new Inserter({
-          decide: decideImport(null, false, imprt[name][sub].key),
+          decide: decideImport(null, false, imprt[object][name].key),
           filter: filterData({}, false),
           id: 'rest-import-adder',
           merge: mergeAdd()
         });
       }
 
-      if (subQuery && subQuery.edit) {
+      if (objectQuery && objectQuery.edit) {
         editor = new Updater({
-          decide: decideImport(true, true, imprt[name][sub].key),
+          decide: decideImport(true, true, imprt[object][name].key),
           filter: filterData({}, false),
           id: 'rest-import-editor',
           merge: mergeData()
@@ -127,9 +127,9 @@ export default function createImport(structure, query, imprt) {
         editor.set({ any: true });
       }
 
-      if (subQuery && subQuery.unique) {
+      if (objectQuery && objectQuery.unique) {
         unique = new Selector({
-          decide: decideImport(false, false, imprt[name][sub].key),
+          decide: decideImport(false, false, imprt[object][name].key),
           filter: filterData({}, false),
           id: 'rest-import-unique',
           merge: mergeUnique(true)
@@ -140,9 +140,9 @@ export default function createImport(structure, query, imprt) {
         .connect(importer)
         .connect(slicer)
         .connect(validator)
-        .connect(unique ? subQuery.unique(unique) : null)
-        .connect(adder ? subQuery.add(adder) : null)
-        .connect(editor ? subQuery.edit(editor) : null)
+        .connect(unique ? objectQuery.unique(unique) : null)
+        .connect(adder ? objectQuery.add(adder) : null)
+        .connect(editor ? objectQuery.edit(editor) : null)
         .connect(collector)
         .connect(unifier)
         .connect(importUnifier);

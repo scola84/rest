@@ -6,11 +6,11 @@ export default class Importer extends Worker {
 
     this._map = null;
     this._name = null;
-    this._sub = null;
+    this._object = null;
 
     this.setMap(options.map);
     this.setName(options.name);
-    this.setSub(options.sub);
+    this.setObject(options.object);
   }
 
   setMap(value = {}) {
@@ -23,8 +23,8 @@ export default class Importer extends Worker {
     return this;
   }
 
-  setSub(value = null) {
-    this._sub = value;
+  setObject(value = null) {
+    this._object = value;
     return this;
   }
 
@@ -52,8 +52,8 @@ export default class Importer extends Worker {
       return this._merge(box, data, object);
     }
 
-    data.output[this._name] = data.output[this._name] || {};
-    data.output[this._name][this._sub] = object;
+    data.output[this._object] = data.output[this._object] || {};
+    data.output[this._object][this._name] = object;
 
     return data;
   }

@@ -5,10 +5,10 @@ export default class Collector extends Worker {
     super(options);
 
     this._name = null;
-    this._sub = null;
+    this._object = null;
 
     this.setName(options.name);
-    this.setSub(options.sub);
+    this.setObject(options.object);
   }
 
   setName(value = null) {
@@ -16,8 +16,8 @@ export default class Collector extends Worker {
     return this;
   }
 
-  setSub(value = null) {
-    this._sub = value;
+  setObject(value = null) {
+    this._object = value;
     return this;
   }
 
@@ -31,14 +31,14 @@ export default class Collector extends Worker {
 
   err(box, error, callback) {
     box.data.output.error = true;
-    box.data.output[this._name][this._sub][box.begin].error = error;
+    box.data.output[this._object][this._name][box.begin].error = error;
     this.pass(box, box.data, callback);
   }
 
   _collect(box, data) {
-    box.data.output[this._name][this._sub][box.begin] = Object.assign({},
+    box.data.output[this._object][this._name][box.begin] = Object.assign({},
       data.data,
-      box.data.output[this._name][this._sub][box.begin]
+      box.data.output[this._object][this._name][box.begin]
     );
   }
 }
