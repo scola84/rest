@@ -15,6 +15,7 @@ import filterPermission from './filter/permission';
 import mergeAdd from './merge/add';
 import mergeCheck from './merge/check';
 import mergeData from './merge/data';
+import mergeEdit from './merge/edit';
 import mergeImport from './merge/import';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
@@ -43,6 +44,7 @@ export {
   mergeAdd,
   mergeCheck,
   mergeData,
+  mergeEdit,
   mergeImport,
   mergeLink,
   mergeList,

@@ -17,6 +17,7 @@ import { Worker } from '@scola/worker';
 import {
   decideLink,
   filterData,
+  mergeEdit,
   mergeLink,
   mergeObject,
   mergeValidator
@@ -95,7 +96,8 @@ export default function createObject(structure, query) {
   if (structure.edit && query.edit) {
     const editor = new Updater({
       filter: structure.edit.filter || filterData(),
-      id: 'rest-object-editor'
+      id: 'rest-object-editor',
+      merge: mergeEdit()
     });
 
     const editValidator = new Validator({
@@ -114,7 +116,8 @@ export default function createObject(structure, query) {
   if (structure.patch && query.patch) {
     const patcher = new Updater({
       filter: structure.patch.filter || filterData(),
-      id: 'rest-object-patcher'
+      id: 'rest-object-patcher',
+      merge: mergeEdit()
     });
 
     const patchValidator = new Validator({

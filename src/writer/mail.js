@@ -34,11 +34,12 @@ export default class MailWriter extends Worker {
         text
       }, this._config.message);
 
-      smtp.sendMail(message, (error) => {
+      smtp.sendMail(message, (error, info) => {
         if (error) {
           datum.error = error;
           fail[fail.length] = datum;
         } else {
+          datum.info = info;
           pass[pass.length] = datum;
         }
 
