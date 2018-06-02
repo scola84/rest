@@ -18,6 +18,7 @@ import {
   decideLink,
   filterData,
   mergeEdit,
+  mergeDelete,
   mergeLink,
   mergeObject,
   mergeValidator
@@ -59,7 +60,8 @@ export default function createObject(structure, query) {
   if (structure.del && query.del) {
     const deleter = new Deleter({
       filter: structure.del.filter || filterData(),
-      id: 'rest-object-deleter'
+      id: 'rest-object-deleter',
+      merge: mergeDelete()
     });
 
     const deleteValidator = new Validator({

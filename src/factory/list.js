@@ -19,6 +19,7 @@ import {
   filterData,
   filterList,
   mergeAdd,
+  mergeDelete,
   mergeList,
   mergeValidator
 } from '../helper';
@@ -58,7 +59,8 @@ export default function createList(structure, query) {
   if (structure.clr && query.clr) {
     const deleter = new Deleter({
       filter: structure.clr.filter || filterData(),
-      id: 'rest-list-deleter'
+      id: 'rest-list-deleter',
+      merge: mergeDelete()
     });
 
     const deleteResolver = new ObjectResolver({
