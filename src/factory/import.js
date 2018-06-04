@@ -27,7 +27,7 @@ import {
   mergeUnique
 } from '../helper';
 
-export default function createImport(structure, query, imprt) {
+export default function createImport(structure, query, imprt, config) {
   const importBroadcaster = new Broadcaster({
     id: 'rest-import-import-broadcaster',
     name: 'import',
@@ -101,15 +101,25 @@ export default function createImport(structure, query, imprt) {
 
       if (objectStructure && objectStructure.add) {
         validator = new Validator({
+          decide: decideImport(false, false, imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-validator',
           structure: objectStructure.add.form
         });
       }
 
+      if (objectQuery && objectQuery.unique) {
+        unique = new Selector({
+          decide: decideImport(false, false, imprt[object][name]),
+          filter: filterData({}, false),
+          id: 'rest-import-unique',
+          merge: mergeUnique(true)
+        });
+      }
+
       if (objectQuery && objectQuery.add) {
         adder = new Inserter({
-          decide: decideImport(null, false, imprt[object][name].key),
+          decide: decideImport(null, false, imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-adder',
           merge: mergeAdd()
@@ -118,7 +128,7 @@ export default function createImport(structure, query, imprt) {
 
       if (objectQuery && objectQuery.edit) {
         editor = new Updater({
-          decide: decideImport(true, true, imprt[object][name].key),
+          decide: decideImport(true, true, imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-editor',
           merge: mergeData()
@@ -127,22 +137,13 @@ export default function createImport(structure, query, imprt) {
         editor.set({ any: true });
       }
 
-      if (objectQuery && objectQuery.unique) {
-        unique = new Selector({
-          decide: decideImport(false, false, imprt[object][name].key),
-          filter: filterData({}, false),
-          id: 'rest-import-unique',
-          merge: mergeUnique(true)
-        });
-      }
-
       importBroadcaster
         .connect(importer)
         .connect(slicer)
         .connect(validator)
-        .connect(unique ? objectQuery.unique(unique) : null)
-        .connect(adder ? objectQuery.add(adder) : null)
-        .connect(editor ? objectQuery.edit(editor) : null)
+        .connect(unique ? objectQuery.unique(unique, config[object]) : null)
+        .connect(adder ? objectQuery.add(adder, config[object]) : null)
+        .connect(editor ? objectQuery.edit(editor, config[object]) : null)
         .connect(collector)
         .connect(unifier)
         .connect(importUnifier);
