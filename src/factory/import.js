@@ -43,6 +43,8 @@ export default function createImport(structure, query, imprt, config) {
   let object = null;
   let name = null;
   let names = null;
+
+  let objectForm = null;
   let objectQuery = null;
   let objectStructure = null;
 
@@ -71,6 +73,7 @@ export default function createImport(structure, query, imprt, config) {
 
       objectStructure = structure[object] && structure[object][name];
       objectQuery = query[object] && query[object][name];
+      objectForm = objectStructure.add || objectStructure.edit;
 
       collector = new Collector({
         id: 'rest-import-collector',
@@ -99,12 +102,12 @@ export default function createImport(structure, query, imprt, config) {
         wrap: true
       });
 
-      if (objectStructure && objectStructure.add) {
+      if (objectStructure && objectForm) {
         validator = new Validator({
           decide: decideImport(false, false, imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-validator',
-          structure: objectStructure.add.form
+          structure: objectForm.form
         });
       }
 
