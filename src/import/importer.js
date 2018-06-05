@@ -60,7 +60,7 @@ export default class Importer extends Worker {
 
   _split(object) {
     const keys = Object.keys(object);
-    const result = [];
+    const result = [{}];
 
     let key = null;
     let values = null;

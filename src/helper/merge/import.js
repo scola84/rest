@@ -8,6 +8,6 @@ export default function mergeImport() {
       user: box.box.box.user
     }, box);
 
-    return [box, { data: items.slice(begin, end).pop() }];
+    return [box, { data: items.slice(begin, end).pop() || {} }];
   };
 }
