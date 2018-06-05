@@ -9,7 +9,9 @@ import { Validator } from '@scola/validator';
 import {
   Broadcaster,
   Slicer,
-  Unifier
+  Unifier,
+  Queuer,
+  Worker
 } from '@scola/worker';
 
 import {
@@ -38,6 +40,18 @@ export default function createImport(structure, query, imprt, config) {
     id: 'rest-import-import-unifier',
     name: 'import',
     wrap: true
+  });
+
+  const importQueuer = new Queuer({
+    id: 'rest-import-import-queuer'
+  });
+
+  const importResolver = new Worker({
+    act(box, data, callback) {
+      callback();
+      this.pass(box, data);
+    },
+    id: 'rest-import-import-resolver'
   });
 
   let object = null;
@@ -153,5 +167,11 @@ export default function createImport(structure, query, imprt, config) {
     }
   }
 
-  return [importBroadcaster, importUnifier];
+  importQueuer
+    .connect(importBroadcaster);
+
+  importUnifier
+    .connect(importResolver);
+
+  return [importQueuer, importResolver];
 }
