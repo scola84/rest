@@ -16,10 +16,12 @@ import { Worker } from '@scola/worker';
 
 import {
   decideLink,
+  decideMeta,
   filterData,
   mergeEdit,
   mergeDelete,
   mergeLink,
+  mergeMeta,
   mergeObject,
   mergeValidator
 } from '../helper';
@@ -84,6 +86,12 @@ export default function createObject(structure, query) {
       merge: mergeLink(structure)
     });
 
+    const meta = new Selector({
+      decide: decideMeta(),
+      id: 'rest-object-meta',
+      merge: mergeMeta()
+    });
+
     const viewer = new Selector({
       id: 'rest-object-viewer',
       merge: mergeObject(query.type)
@@ -91,6 +99,7 @@ export default function createObject(structure, query) {
 
     methodRouter
       .connect('GET', query.view(viewer, query.config))
+      .connect(query.meta ? query.meta(meta, query.config) : null)
       .connect(query.link ? query.link(linker, query.config) : null)
       .connect(objectResolver);
   }

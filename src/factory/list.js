@@ -16,11 +16,13 @@ import { Validator } from '@scola/validator';
 import { Worker } from '@scola/worker';
 
 import {
+  decideMeta,
   filterData,
   filterList,
   mergeAdd,
   mergeDelete,
   mergeList,
+  mergeMeta,
   mergeValidator
 } from '../helper';
 
@@ -87,6 +89,12 @@ export default function createList(structure, query) {
       merge: mergeList()
     });
 
+    const meta = new Selector({
+      decide: decideMeta(),
+      id: 'rest-list-meta',
+      merge: mergeMeta()
+    });
+
     const listResolver = new ListResolver({
       id: 'rest-list-resolver'
     });
@@ -100,6 +108,7 @@ export default function createList(structure, query) {
     methodRouter
       .connect('GET', listValidator)
       .connect(query.list(lister, query.config))
+      .connect(query.meta ? query.meta(meta, query.config) : null)
       .connect(listResolver)
       .connect(end);
   }
