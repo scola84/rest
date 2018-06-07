@@ -13,7 +13,10 @@ export default function createCheck(child, ...parents) {
     workers[i] = parent.setup(worker);
     workers[i].setDecide(child.getDecide());
     workers[i].setFilter(filterData());
-    workers[i].setMerge(mergeCheck(parent.merge, worker));
+
+    if (parent.merge !== false) {
+      workers[i].setMerge(mergeCheck(parent.merge, worker));
+    }
 
     if (parent.where) {
       worker.where(parent.where, parent.index);
