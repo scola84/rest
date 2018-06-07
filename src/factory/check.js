@@ -8,13 +8,12 @@ export default function createCheck(child, ...parents) {
 
   for (let i = 0; i < parents.length; i += 1) {
     parent = parents[i];
-    worker = new Selector({
-      decide: child.getDecide(),
-      filter: filterData(),
-      merge: mergeCheck(parent.merge)
-    });
+    worker = new Selector();
 
     workers[i] = parent.setup(worker);
+    workers[i].setDecide(child.getDecide());
+    workers[i].setFilter(filterData());
+    workers[i].setMerge(mergeCheck(parent.merge, worker));
 
     if (parent.where) {
       worker.where(parent.where, parent.index);
