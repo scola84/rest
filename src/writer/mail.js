@@ -22,9 +22,23 @@ export default class MailWriter extends Worker {
     const pass = [];
     const fail = [];
 
+    const body = data.mail.body;
+    const wrap = (data.mail.wrap || '%s').replace(/%([^s])/g, '%%$1');
+
     each(data.data, (datum, eachCallback) => {
-      const text = sprintf.sprintf(data.mail.body, datum);
-      const html = sprintf.sprintf(data.mail.wrap || '%s', marked(text));
+      let text = null;
+      let html = null;
+
+      try {
+        text = sprintf.sprintf(body, datum);
+        html = sprintf.sprintf(wrap, marked(text));
+      } catch (error) {
+        datum.error = error;
+        fail[fail.length] = datum;
+
+        eachCallback();
+        return;
+      }
 
       const message = Object.assign({
         from: data.mail.from,
