@@ -31,7 +31,10 @@ export default class MailWriter extends Worker {
 
       try {
         text = sprintf.sprintf(body, datum);
-        html = sprintf.sprintf(wrap, marked(text));
+        html = sprintf.sprintf(wrap, marked(text, {
+          breaks: true,
+          sanitize: true
+        }));
       } catch (error) {
         datum.error = error;
         fail[fail.length] = datum;
