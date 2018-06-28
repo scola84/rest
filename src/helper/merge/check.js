@@ -12,15 +12,19 @@ export default function mergeCheck(parent) {
       return parent.merge(request, data, { query, result });
     }
 
+    request.check = request.check || {};
+    request.check[parent.name || 'default'] = result;
+
     let meta = {};
-    let found = false;
 
     if (parent.scope) {
       result = result[0];
 
-      for (let i = 0; i < parent.scope.length; i += 1) {
-        found = found || result.scope === parent.scope[i];
-      }
+      const found = request.user.may({
+        scope: parent.scope
+      }, request, {
+        data: result
+      });
 
       if (found === false) {
         throw new Error('403 Modification not allowed' +
