@@ -21,7 +21,6 @@ import mergeEdit from './merge/edit';
 import mergeImport from './merge/import';
 import mergeLink from './merge/link';
 import mergeList from './merge/list';
-import mergeMeta from './merge/meta';
 import mergeUnique from './merge/unique';
 import mergeValidator from './merge/validator';
 import mergeObject from './merge/object';
@@ -53,7 +52,6 @@ export {
   mergeImport,
   mergeLink,
   mergeList,
-  mergeMeta,
   mergeObject,
   mergeUnique,
   mergeValidator,
