@@ -16,7 +16,6 @@ import { Worker } from '@scola/worker';
 
 import {
   decideLink,
-  decideMeta,
   filterData,
   mergeEdit,
   mergeDelete,

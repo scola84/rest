@@ -16,7 +16,6 @@ import { Validator } from '@scola/validator';
 import { Worker } from '@scola/worker';
 
 import {
-  decideMeta,
   filterData,
   filterList,
   mergeAdd,
