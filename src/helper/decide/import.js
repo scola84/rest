@@ -1,10 +1,9 @@
-export default function decideImport(checkExists, checkForce, map) {
+export default function decideImport(checkExists, checkForce, checkLoad, map) {
   return (box, data) => {
-    const load = box.import.load === true;
-
     let exists = true;
     let force = true;
     let include = true;
+    let load = true;
 
     if (map.unique !== true) {
       if (checkExists === true) {
@@ -19,11 +18,15 @@ export default function decideImport(checkExists, checkForce, map) {
     }
 
     if (map.decide) {
-      include = map.decide(box, data.data);
+      include = map.decide(box, data.data, checkLoad);
+    }
+
+    if (checkLoad === true) {
+      load = box.import.load === true;
     }
 
     if (map.key) {
-      box.params = [null].concat(map.key(box, data.data));
+      box.params = [null].concat(map.key(box, data.data, checkLoad));
     }
 
     data.data.include = include;
