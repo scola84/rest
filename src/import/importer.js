@@ -38,7 +38,13 @@ export default class Importer extends Worker {
     for (let i = 0; i < fields.length; i += 1) {
       name = fields[i].name;
       value = fields[i].value;
-      object[name] = value(box.box, data);
+
+      try {
+        object[name] = value(box.box, data);
+      } catch (error) {
+        data.error = true;
+        object.error = error;
+      }
     }
 
     object = this._map.multiple ? this._split(object) : [object];
