@@ -7,7 +7,6 @@ import {
 } from './database';
 
 import decideLink from './decide/link';
-import decideMeta from './decide/meta';
 import decideImport from './decide/import';
 import filterData from './filter/data';
 import filterImport from './filter/import';
@@ -38,7 +37,6 @@ export {
 
 export {
   decideLink,
-  decideMeta,
   decideImport,
   filterData,
   filterImport,
