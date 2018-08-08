@@ -42,8 +42,8 @@ export default class Importer extends Worker {
       try {
         object[name] = value(box.box, data);
       } catch (error) {
-        data.error = true;
-        object.error = error;
+        data.output.error = true;
+        object.error = { message: error.message };
       }
     }
 
