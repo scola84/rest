@@ -18,7 +18,12 @@ export default function decideImport(checkExists, checkForce, checkLoad, map) {
     }
 
     if (map.decide) {
-      include = map.decide(box, data.data, checkLoad);
+      const decision = map.decide(box, data.data, checkLoad);
+      const [object, id = true] = Array.isArray(decision) ?
+        decision : [decision];
+
+      include = object && id;
+      data.data.include = object;
     }
 
     if (checkLoad === true) {
@@ -28,8 +33,6 @@ export default function decideImport(checkExists, checkForce, checkLoad, map) {
     if (map.key) {
       box.params = [null].concat(map.key(box, data.data, checkLoad));
     }
-
-    data.data.include = include;
 
     return load && exists && force && include;
   };
