@@ -2,6 +2,7 @@ import {
   ListResolver,
   MethodRouter,
   ObjectResolver,
+  OptionsResolver,
   RoleChecker,
   UserChecker
 } from '@scola/http';
@@ -18,6 +19,7 @@ import { Worker } from '@scola/worker';
 import {
   filterData,
   filterList,
+  filterOptions,
   mergeAdd,
   mergeDelete,
   mergeList,
@@ -25,11 +27,20 @@ import {
 } from '../helper';
 
 export default function createList(structure, query) {
+  const options = {
+    add: query.add && structure.add,
+    clr: query.clr && structure.clr,
+    list: query.list && structure.list
+  };
+
   const begin = new Worker({
     id: 'rest-list-begin'
   });
 
   const end = new Worker({
+    err(request, error, callback) {
+      this.fail(request.createResponse(), error, callback);
+    },
     id: 'rest-list-end'
   });
 
@@ -68,17 +79,23 @@ export default function createList(structure, query) {
     });
 
     const deleteValidator = new Validator({
+      extract: (s) => s.clr.form,
       filter: structure.clr.filter || filterData(),
       id: 'rest-list-delete-validator',
       merge: mergeValidator(),
-      structure: structure.clr.form
+      structure
     });
 
     methodRouter
-      .connect('DELETE', deleteValidator)
+      .connect('DELETE', new Worker())
+      .connect(query.options ? query.options(options) : null)
+      .connect(deleteValidator)
       .connect(query.clr(deleter, query.config))
       .connect(deleteResolver)
       .connect(end);
+
+    deleteValidator
+      .bypass(deleteResolver);
   }
 
   if (structure.list && query.list) {
@@ -92,15 +109,31 @@ export default function createList(structure, query) {
     });
 
     const listValidator = new Validator({
+      extract: (s) => s.list.query,
+      filter: filterList(),
       id: 'rest-list-validator',
-      structure: structure.list.query,
-      filter: filterList()
+      structure
     });
 
     methodRouter
       .connect('GET', listValidator)
       .connect(query.list(lister, query.config))
       .connect(listResolver)
+      .connect(end);
+
+    listValidator
+      .bypass(listResolver);
+  }
+
+  if (query.options) {
+    const optionsResolver = new OptionsResolver({
+      id: 'rest-list-options-resolver',
+      filter: filterOptions(query.permission('list'))
+    });
+
+    methodRouter
+      .connect('OPTIONS', query.options(options))
+      .connect(optionsResolver)
       .connect(end);
   }
 
@@ -117,18 +150,27 @@ export default function createList(structure, query) {
     });
 
     const addValidator = new Validator({
+      extract: (s) => s.add.form,
       filter: structure.add.filter || filterData(),
       id: 'rest-list-add-validator',
       merge: mergeValidator(),
-      structure: structure.add.form
+      structure
     });
 
     methodRouter
-      .connect('POST', addValidator)
+      .connect('POST', new Worker())
+      .connect(query.options ? query.options(options) : null)
+      .connect(addValidator)
       .connect(query.add(adder, query.config))
       .connect(addResolver)
       .connect(end);
+
+    addValidator
+      .bypass(addResolver);
   }
+
+  methodRouter
+    .bypass(end);
 
   return [begin, end];
 }

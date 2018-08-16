@@ -1,6 +1,8 @@
 import {
+  FileResolver,
   MethodRouter,
   ObjectResolver,
+  OptionsResolver,
   RoleChecker,
   UserChecker
 } from '@scola/http';
@@ -17,6 +19,7 @@ import { Worker } from '@scola/worker';
 import {
   decideLink,
   filterData,
+  filterOptions,
   mergeEdit,
   mergeDelete,
   mergeLink,
@@ -25,18 +28,31 @@ import {
 } from '../helper';
 
 export default function createObject(structure, query) {
+  const options = {
+    del: query.del && structure.del,
+    edit: query.edit && structure.edit,
+    patch: query.patch && structure.patch,
+    view: query.view && structure.view
+  };
+
   const begin = new Worker({
     id: 'rest-object-begin'
+  });
+
+  const end = new Worker({
+    err(request, error, callback) {
+      this.fail(request.createResponse(), error, callback);
+    },
+    id: 'rest-object-end'
   });
 
   const methodRouter = new MethodRouter({
     id: 'rest-object-method-router'
   });
 
-  const objectResolver = new ObjectResolver({
-    id: 'rest-object-resolver',
-    type: query.type
-  });
+  const objectResolver = query.type === 'file' ?
+    new FileResolver({ id: 'rest-file-resolver' }) :
+    new ObjectResolver({ id: 'rest-object-resolver' });
 
   if (query.check) {
     const roleChecker = new RoleChecker({
@@ -65,14 +81,17 @@ export default function createObject(structure, query) {
     });
 
     const deleteValidator = new Validator({
+      extract: (s) => s.del.form,
       filter: structure.del.filter || filterData(),
       id: 'rest-object-delete-validator',
       merge: mergeValidator(),
-      structure: structure.del.form
+      structure
     });
 
     methodRouter
-      .connect('DELETE', deleteValidator)
+      .connect('DELETE', new Worker())
+      .connect(query.options ? query.options(options) : null)
+      .connect(deleteValidator)
       .connect(query.del(deleter, query.config))
       .connect(objectResolver);
   }
@@ -95,24 +114,16 @@ export default function createObject(structure, query) {
       .connect(objectResolver);
   }
 
-  if (structure.edit && query.edit) {
-    const editor = new Updater({
-      filter: structure.edit.filter || filterData(),
-      id: 'rest-object-editor',
-      merge: mergeEdit()
-    });
-
-    const editValidator = new Validator({
-      filter: structure.edit.filter || filterData(),
-      id: 'rest-object-edit-validator',
-      merge: mergeValidator(),
-      structure: structure.edit.form
+  if (query.options) {
+    const optionsResolver = new OptionsResolver({
+      id: 'rest-object-options-resolver',
+      filter: filterOptions(query.permission('object'))
     });
 
     methodRouter
-      .connect('PUT', editValidator)
-      .connect(query.edit(editor, query.config))
-      .connect(objectResolver);
+      .connect('OPTIONS', query.options(options))
+      .connect(optionsResolver)
+      .connect(end);
   }
 
   if (structure.patch && query.patch) {
@@ -123,17 +134,49 @@ export default function createObject(structure, query) {
     });
 
     const patchValidator = new Validator({
+      extract: (s) => s.patch.form,
       filter: structure.patch.filter || filterData(),
       id: 'rest-object-patch-validator',
       merge: mergeValidator(),
-      structure: structure.patch.form
+      structure
     });
 
     methodRouter
-      .connect('PATCH', patchValidator)
+      .connect('PATCH', new Worker())
+      .connect(query.options ? query.options(options) : null)
+      .connect(patchValidator)
       .connect(query.patch(patcher, query.config))
       .connect(objectResolver);
   }
 
-  return [begin, objectResolver];
+  if (structure.edit && query.edit) {
+    const editor = new Updater({
+      filter: structure.edit.filter || filterData(),
+      id: 'rest-object-editor',
+      merge: mergeEdit()
+    });
+
+    const editValidator = new Validator({
+      extract: (s) => s.edit.form,
+      filter: structure.edit.filter || filterData(),
+      id: 'rest-object-edit-validator',
+      merge: mergeValidator(),
+      structure
+    });
+
+    methodRouter
+      .connect('PUT', new Worker())
+      .connect(query.options ? query.options(options) : null)
+      .connect(editValidator)
+      .connect(query.edit(editor, query.config))
+      .connect(objectResolver);
+  }
+
+  methodRouter
+    .bypass(end);
+
+  objectResolver
+    .connect(end);
+
+  return [begin, end];
 }

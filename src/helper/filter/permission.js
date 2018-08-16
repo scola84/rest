@@ -16,7 +16,8 @@ const map = {
 export default function filterPermission(base) {
   return (type) => {
     return (request) => {
-      return request.user.may(base + '.' + map[type][request.method]);
+      return request.method === 'OPTIONS' ? true :
+        request.user.may(base + '.' + map[type][request.method]);
     };
   };
 }
