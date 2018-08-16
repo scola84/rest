@@ -8,17 +8,17 @@
   "main": "./index.js",
   "jsnext:main": "./index.js",
   "dependencies": {
-    "@scola/http": "^5.0.0",
-    "@scola/validator": "^11.3.4",
-    "@scola/worker": "^2.6.2",
+    "@scola/http": "^5.1.0",
+    "@scola/validator": "^11.4.1",
+    "@scola/worker": "^2.6.4",
     "async": "^2.6.1",
     "fs-extra": "^7.0.0",
     "lodash-es": "^4.17.10",
     "marked": "^0.4.0",
     "messagebird": "^2.1.4",
-    "nodemailer": "^4.6.7",
+    "nodemailer": "^4.6.8",
     "sharp": "^0.20.5",
-    "shortid": "^2.2.12",
+    "shortid": "^2.2.13",
     "sprintf-js": "^1.1.1"
   }
 }
