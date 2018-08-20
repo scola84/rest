@@ -1,4 +1,6 @@
-export default function decideImport(checkExists, checkForce, checkLoad, map) {
+export default function decideImport(checkExists, checkForce, checkLoad,
+  context, map) {
+
   return (box, data) => {
     let exists = true;
     let force = true;
@@ -18,7 +20,7 @@ export default function decideImport(checkExists, checkForce, checkLoad, map) {
     }
 
     if (map.decide) {
-      const decision = map.decide(box, data.data, checkLoad);
+      const decision = map.decide(box, data.data, context);
       const [object, id = true] = Array.isArray(decision) ?
         decision : [decision];
 

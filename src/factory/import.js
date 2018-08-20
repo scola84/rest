@@ -118,7 +118,8 @@ export default function createImport(structure, query, imprt, config) {
 
       if (objectStructure && objectForm) {
         validator = new Validator({
-          decide: decideImport(false, false, false, imprt[object][name]),
+          decide: decideImport(false, false, false, 'validate',
+            imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-validator',
           structure: objectForm.form
@@ -127,7 +128,8 @@ export default function createImport(structure, query, imprt, config) {
 
       if (objectQuery && objectQuery.unique) {
         unique = new Selector({
-          decide: decideImport(false, false, false, imprt[object][name]),
+          decide: decideImport(false, false, false, 'unique',
+            imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-unique',
           merge: mergeUnique(true)
@@ -136,7 +138,8 @@ export default function createImport(structure, query, imprt, config) {
 
       if (objectQuery && objectQuery.add) {
         adder = new Inserter({
-          decide: decideImport(null, false, true, imprt[object][name]),
+          decide: decideImport(null, false, true, 'add',
+            imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-adder',
           merge: mergeAdd()
@@ -145,7 +148,8 @@ export default function createImport(structure, query, imprt, config) {
 
       if (objectQuery && objectQuery.edit) {
         editor = new Updater({
-          decide: decideImport(true, true, true, imprt[object][name]),
+          decide: decideImport(true, true, true, 'edit',
+            imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-editor',
           merge: mergeData()
