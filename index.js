@@ -34,6 +34,7 @@ import {
 
 import {
   createCheck,
+  createExport,
   createImport,
   createList,
   createObject
@@ -75,6 +76,7 @@ export {
 
 export {
   createCheck,
+  createExport,
   createImport,
   createList,
   createObject
