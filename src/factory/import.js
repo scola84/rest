@@ -134,9 +134,11 @@ export default function createImport(structure, query, imprt, config) {
           id: 'rest-import-unique',
           merge: mergeUnique(true)
         });
+
+        unique = objectQuery.unique(unique, config[object]);
       }
 
-      if (objectQuery && objectQuery.add) {
+      if (objectQuery && objectQuery.add || objectQuery.edit) {
         adder = new Inserter({
           decide: decideImport(null, false, true, 'add',
             imprt[object][name]),
@@ -144,6 +146,12 @@ export default function createImport(structure, query, imprt, config) {
           id: 'rest-import-adder',
           merge: mergeAdd()
         });
+
+        if (objectQuery.add) {
+          adder = objectQuery.add(adder, config[object]);
+        } else {
+          adder = objectQuery.edit(adder, config[object]);
+        }
       }
 
       if (objectQuery && objectQuery.edit) {
@@ -156,15 +164,16 @@ export default function createImport(structure, query, imprt, config) {
         });
 
         editor.set({ any: true });
+        editor = objectQuery.edit(editor, config[object]);
       }
 
       importBroadcaster
         .connect(importer)
         .connect(slicer)
         .connect(validator)
-        .connect(unique ? objectQuery.unique(unique, config[object]) : null)
-        .connect(adder ? objectQuery.add(adder, config[object]) : null)
-        .connect(editor ? objectQuery.edit(editor, config[object]) : null)
+        .connect(unique)
+        .connect(adder)
+        .connect(editor)
         .connect(collector)
         .connect(unifier)
         .connect(importUnifier);
