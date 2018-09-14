@@ -34,6 +34,7 @@ export default class SmsWriter extends Worker {
 
       transport.messages.create(message, (error) => {
         if (error) {
+          this.log('error', request, error, callback);
           datum.error = error;
           fail[fail.length] = datum;
         } else {

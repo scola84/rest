@@ -29,6 +29,18 @@ export default class MailWriter extends Worker {
       let text = null;
       let html = null;
 
+      if (typeof data.mail.from === 'undefined') {
+        const error = new Error('Mail is invalid: from not set');
+        this._error(request, data, callback, fail, datum, error);
+        return eachCallback();
+      }
+
+      if (typeof datum.to === 'undefined') {
+        const error = new Error('Mail is invalid: to not set');
+        this._error(request, data, callback, fail, datum, error);
+        return eachCallback();
+      }
+
       try {
         text = sprintf.sprintf(body, datum);
         html = sprintf.sprintf(wrap, marked(text, {
@@ -36,11 +48,8 @@ export default class MailWriter extends Worker {
           sanitize: true
         }));
       } catch (error) {
-        datum.error = error;
-        fail[fail.length] = datum;
-
-        eachCallback();
-        return;
+        this._error(request, data, callback, fail, datum, error);
+        return eachCallback();
       }
 
       const message = Object.assign({
@@ -51,16 +60,16 @@ export default class MailWriter extends Worker {
         text
       }, this._config.message);
 
-      smtp.sendMail(message, (error, info) => {
+      return smtp.sendMail(message, (error, info) => {
         if (error) {
-          datum.error = error;
-          fail[fail.length] = datum;
-        } else {
-          datum.info = info;
-          pass[pass.length] = datum;
+          this._error(request, data, callback, fail, datum, error);
+          return eachCallback();
         }
 
-        eachCallback();
+        datum.info = info;
+        pass[pass.length] = datum;
+
+        return eachCallback();
       });
     }, () => {
       this.pass(request, { fail, pass }, callback);
@@ -70,5 +79,12 @@ export default class MailWriter extends Worker {
   decide(request, data) {
     return Array.isArray(data.data) &&
       typeof data.mail !== 'undefined';
+  }
+
+  _error(request, data, callback, fail, datum, error) {
+    this.log('error', request, error, callback);
+
+    datum.error = error;
+    fail[fail.length] = datum;
   }
 }
