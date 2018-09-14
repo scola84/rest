@@ -2,6 +2,7 @@ import pick from 'lodash-es/pick';
 
 const map = {
   add: 'POST',
+  call: 'POST',
   clr: 'DELETE',
   del: 'DELETE',
   edit: 'PUT',

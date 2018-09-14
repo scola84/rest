@@ -15,6 +15,7 @@ import {
   filterData,
   filterImport,
   filterList,
+  filterOptions,
   filterPermission,
   mergeAdd,
   mergeCheck,
@@ -27,12 +28,14 @@ import {
   mergeObject,
   mergeUnique,
   mergeValidator,
+  queryCall,
   queryList,
   queryObject,
   whereAuth
 } from './src/helper';
 
 import {
+  createCall,
   createCheck,
   createExport,
   createImport,
@@ -57,6 +60,7 @@ export {
   filterData,
   filterImport,
   filterList,
+  filterOptions,
   filterPermission,
   mergeAdd,
   mergeCheck,
@@ -69,12 +73,14 @@ export {
   mergeObject,
   mergeUnique,
   mergeValidator,
+  queryCall,
   queryList,
   queryObject,
   whereAuth
 };
 
 export {
+  createCall,
   createCheck,
   createExport,
   createImport,

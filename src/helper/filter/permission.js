@@ -1,4 +1,7 @@
 const map = {
+  call: {
+    POST: 'call'
+  },
   list: {
     DELETE: 'del',
     GET: 'list',
