@@ -4,6 +4,7 @@ import createExport from './export';
 import createImport from './import';
 import createList from './list';
 import createObject from './object';
+import createRotation from './rotation';
 
 export {
   createCall,
@@ -11,5 +12,6 @@ export {
   createExport,
   createImport,
   createList,
-  createObject
+  createObject,
+  createRotation
 };

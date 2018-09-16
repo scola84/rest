@@ -40,7 +40,8 @@ import {
   createExport,
   createImport,
   createList,
-  createObject
+  createObject,
+  createRotation
 } from './src/factory';
 
 export {
@@ -85,5 +86,6 @@ export {
   createExport,
   createImport,
   createList,
-  createObject
+  createObject,
+  createRotation
 };
