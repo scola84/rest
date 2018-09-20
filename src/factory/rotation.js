@@ -32,16 +32,9 @@ export default function createRotation(inner, query, config) {
     id: 'rest-rotation-rotator-begin'
   });
 
-  const rotatorEnd = new Worker({
-    act(box) {
-      const total = box.unify['rotation-slicer'].total;
-
-      rotatorBegin.rotate(box, total);
-
-      if (box.limit.offset > 0) {
-        rotatorBegin.handle(box);
-      }
-    },
+  const rotatorEnd = new Rotator({
+    begin: rotatorBegin,
+    filter: (box) => box.unify['rotation-slicer'].total,
     id: 'rest-rotation-rotator-end'
   });
 
