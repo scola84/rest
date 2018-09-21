@@ -5,7 +5,7 @@ export default function queryCall(queries, options = {}) {
   options = defaults({}, options, {
     check: true,
     config: {},
-    permission: `rpc.${options.call}`
+    permission: `${options.section}.${options.call}`
   });
 
   return Object.assign({}, queries, {
