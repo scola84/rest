@@ -46,12 +46,12 @@ export default function createRotation(inner, query, config) {
     merge(box, data, items, begin, end) {
       return [box, items.slice(begin, end).pop()];
     },
-    name: 'rotation-slicer'
+    name: 'rest-rotation'
   });
 
   const unifier = new Unifier({
     id: 'rest-rotation-unifier',
-    name: 'rotation-slicer'
+    name: 'rest-rotation'
   });
 
   broadcaster
