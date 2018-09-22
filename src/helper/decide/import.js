@@ -16,7 +16,7 @@ export default function decideImport(checkExists, checkForce, checkLoad,
     }
 
     if (checkForce === true) {
-      force = box.import.force === true;
+      force = box.import.import.force === true;
     }
 
     if (map.decide) {
@@ -29,7 +29,7 @@ export default function decideImport(checkExists, checkForce, checkLoad,
     }
 
     if (checkLoad === true) {
-      load = box.import.load === true;
+      load = box.import.import.load === true;
     }
 
     if (map.key) {
