@@ -34,7 +34,7 @@ export default function createRotation(inner, query, config) {
 
   const rotatorEnd = new Rotator({
     begin: rotatorBegin,
-    filter: (box) => box.unify['rotation-slicer'].total,
+    filter: (box) => box.unify['rest-rotation'].total,
     id: 'rest-rotation-rotator-end'
   });
 
