@@ -8,14 +8,8 @@ export default function mergeCheck(parent) {
         ` (expected ${count}, found ${result.length})`);
     }
 
-    if (typeof parent.merge === 'function') {
-      return parent.merge(request, data, { query, result });
-    }
-
     request.check = request.check || {};
     request.check[parent.name || 'default'] = result;
-
-    let meta = {};
 
     if (parent.scope) {
       result = result[0];
@@ -28,13 +22,17 @@ export default function mergeCheck(parent) {
 
       if (found === false) {
         throw new Error('403 Modification not allowed' +
-          ` (${result.scope} not found in ${parent.scope})`);
+          ` (${result.scope} is not equal to ${parent.scope})`);
       } else {
-        meta = { scope: result.scope };
+        data = data === '' ? {} : data;
+        data.meta = { scope: result.scope };
       }
     }
 
-    return request.body.type === 'multipart/form-data' ?
-      data : { data, meta };
+    if (parent.merge) {
+      data = parent.merge(request, data, { query, result });
+    }
+
+    return data;
   };
 }
