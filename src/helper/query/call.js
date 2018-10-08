@@ -5,7 +5,7 @@ export default function queryCall(queries, options = {}) {
   options = defaults({}, options, {
     check: true,
     config: {},
-    permission: `${options.section}.${options.call}`
+    permission: `${options.call}.${options.call}`
   });
 
   return Object.assign({}, queries, {
