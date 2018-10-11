@@ -9,6 +9,7 @@ import {
   Inserter,
   Selector,
   Updater,
+  setConfig,
   setDatabase,
   decideLink,
   decideImport,
@@ -31,7 +32,8 @@ import {
   queryCall,
   queryList,
   queryObject,
-  whereAuth
+  whereAuth,
+  config
 } from './src/helper';
 
 import {
@@ -55,6 +57,7 @@ export {
   Inserter,
   Selector,
   Updater,
+  setConfig,
   setDatabase,
   decideLink,
   decideImport,
@@ -77,7 +80,8 @@ export {
   queryCall,
   queryList,
   queryObject,
-  whereAuth
+  whereAuth,
+  config
 };
 
 export {

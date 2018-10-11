@@ -29,7 +29,7 @@ import {
   mergeUnique
 } from '../helper';
 
-export default function createImport(structure, query, imprt, config) {
+export default function createImport(structure, query, imprt) {
   const importBroadcaster = new Broadcaster({
     id: 'rest-import-import-broadcaster',
     name: 'import',
@@ -135,7 +135,7 @@ export default function createImport(structure, query, imprt, config) {
           merge: mergeUnique(true)
         });
 
-        unique = objectQuery.unique(unique, config[object]);
+        unique = objectQuery.unique(unique);
       }
 
       if (objectQuery && objectQuery.add || objectQuery.edit) {
@@ -148,9 +148,9 @@ export default function createImport(structure, query, imprt, config) {
         });
 
         if (objectQuery.add) {
-          adder = objectQuery.add(adder, config[object]);
+          adder = objectQuery.add(adder);
         } else {
-          adder = objectQuery.edit(adder, config[object]);
+          adder = objectQuery.edit(adder);
         }
       }
 
@@ -164,7 +164,7 @@ export default function createImport(structure, query, imprt, config) {
         });
 
         editor.set({ any: true });
-        editor = objectQuery.edit(editor, config[object]);
+        editor = objectQuery.edit(editor);
       }
 
       importBroadcaster

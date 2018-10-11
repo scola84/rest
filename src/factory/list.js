@@ -90,7 +90,7 @@ export default function createList(structure, query) {
       .connect('DELETE', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(deleteValidator)
-      .connect(query.clr(deleter, query.config))
+      .connect(query.clr(deleter))
       .connect(deleteResolver)
       .connect(end);
 
@@ -117,7 +117,7 @@ export default function createList(structure, query) {
 
     methodRouter
       .connect('GET', listValidator)
-      .connect(query.list(lister, query.config))
+      .connect(query.list(lister))
       .connect(listResolver)
       .connect(end);
 
@@ -161,7 +161,7 @@ export default function createList(structure, query) {
       .connect('POST', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(addValidator)
-      .connect(query.add(adder, query.config))
+      .connect(query.add(adder))
       .connect(addResolver)
       .connect(end);
 

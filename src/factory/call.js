@@ -86,7 +86,7 @@ export default function createCall(structure, query) {
       .connect('POST', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(callValidator)
-      .connect(query.call(query.config))
+      .connect(query.call())
       .connect(callResolver)
       .connect(end);
 

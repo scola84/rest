@@ -92,7 +92,7 @@ export default function createObject(structure, query) {
       .connect('DELETE', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(deleteValidator)
-      .connect(query.del(deleter, query.config))
+      .connect(query.del(deleter))
       .connect(objectResolver);
   }
 
@@ -109,8 +109,8 @@ export default function createObject(structure, query) {
     });
 
     methodRouter
-      .connect('GET', query.view(viewer, query.config))
-      .connect(query.link ? query.link(linker, query.config) : null)
+      .connect('GET', query.view(viewer))
+      .connect(query.link ? query.link(linker) : null)
       .connect(objectResolver);
   }
 
@@ -145,7 +145,7 @@ export default function createObject(structure, query) {
       .connect('PATCH', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(patchValidator)
-      .connect(query.patch(patcher, query.config))
+      .connect(query.patch(patcher))
       .connect(objectResolver);
   }
 
@@ -168,7 +168,7 @@ export default function createObject(structure, query) {
       .connect('PUT', new Worker())
       .connect(query.options ? query.options(options) : null)
       .connect(editValidator)
-      .connect(query.edit(editor, query.config))
+      .connect(query.edit(editor))
       .connect(objectResolver);
   }
 
