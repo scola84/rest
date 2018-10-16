@@ -22,7 +22,7 @@ export default function whereAuth(object, names = [], type = 'id') {
           return scope;
         }
 
-        return parent;
+        return [parent];
       }
     }
 
