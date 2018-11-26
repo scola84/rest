@@ -8,9 +8,11 @@ export default function createCheck(child, ...parents) {
   for (let i = 0; i < parents.length; i += 1) {
     parent = parents[i];
 
-    workers[i] = new Selector()
-      .setDecide(child.getDecide())
-      .setMerge(mergeCheck(parent));
+    workers[i] = new Selector({
+      decide: child.getDecide(),
+      id: parent.id,
+      merge: mergeCheck(parent)
+    });
 
     workers[i] = parent.setup(workers[i], {
       del,
