@@ -36,7 +36,7 @@ function del(viewer) {
   return viewer.where({
     required: false,
     value: (request, { data }) => {
-      return data.undelete ? null : 'NULL';
+      return data.action === 'delete' ? 'NULL' : null;
     }
   }, 0);
 }
