@@ -50,34 +50,35 @@ function link(viewer) {
 }
 
 function limit(viewer) {
-  const key = viewer.getKey().name;
+  const key = viewer.getKey();
 
   return viewer.limit((request, { data }) => {
     return {
       offset: 0,
-      count: data[key].length
+      count: data[key.name].length
     };
   });
 }
 
 function list(viewer) {
-  const key = viewer.getKey().name;
+  const key = viewer.getKey();
 
   return viewer.where({
+    columns: key.table ? `${key.table}.${key.name}` : key.name,
     operator: 'IN',
     value: (request, { data }) => {
-      request.body.count = data[key].length;
-      return [data[key]];
+      request.body.count = data[key.name].length;
+      return [data[key.name]];
     }
   }, 1);
 }
 
 function object(viewer) {
-  const key = viewer.getKey().name;
+  const key = viewer.getKey();
 
   return viewer.where({
     value: (request, { data }) => {
-      return data[key];
+      return data[key.name];
     }
   }, 1);
 }
