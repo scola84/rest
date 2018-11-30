@@ -32,21 +32,21 @@ export default function createCheck(child, ...parents) {
   return [workers.shift(), workers.pop()];
 }
 
-function del(viewer) {
+function del(viewer, index = 0) {
   return viewer.where({
     required: false,
     value: (request, { data }) => {
       return data.action === 'delete' ? 'NULL' : null;
     }
-  }, 0);
+  }, index);
 }
 
-function link(viewer) {
+function link(viewer, index = 1) {
   return viewer.where({
     value: (request) => {
       return [request.params[2]];
     }
-  }, 1);
+  }, index);
 }
 
 function limit(viewer) {
@@ -60,7 +60,7 @@ function limit(viewer) {
   });
 }
 
-function list(viewer) {
+function list(viewer, index = 1) {
   const key = viewer.getKey();
 
   return viewer.where({
@@ -70,15 +70,15 @@ function list(viewer) {
       request.body.count = data[key.name].length;
       return [data[key.name]];
     }
-  }, 1);
+  }, index);
 }
 
-function object(viewer) {
+function object(viewer, index = 1) {
   const key = viewer.getKey();
 
   return viewer.where({
     value: (request, { data }) => {
       return data[key.name];
     }
-  }, 1);
+  }, index);
 }
