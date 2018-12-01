@@ -1,4 +1,6 @@
-export default function mergeObject(type = 'data') {
+import omit from 'lodash-es/omit';
+
+export default function mergeObject(type = 'data', omitPaths = []) {
   return (request, data, { result: [object] }) => {
     if (typeof object === 'undefined') {
       return object;
@@ -6,7 +8,7 @@ export default function mergeObject(type = 'data') {
 
     return {
       meta: data.meta,
-      [type]: object
+      [type]: omit(object, omitPaths)
     };
   };
 }

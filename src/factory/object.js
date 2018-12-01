@@ -105,7 +105,7 @@ export default function createObject(structure, query) {
 
     const viewer = new Selector({
       id: 'rest-object-viewer',
-      merge: mergeObject(query.type)
+      merge: mergeObject(query.type, query.omit)
     });
 
     methodRouter
