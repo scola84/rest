@@ -8,7 +8,7 @@ import {
   Worker
 } from '@scola/worker';
 
-export default function createRotation(inner, query, config) {
+export default function createRotation(inner, query, { count }) {
   const broadcaster = new Broadcaster({
     id: 'rest-rotation-broadcaster',
     name: 'rotation-broadcaster'
@@ -28,7 +28,7 @@ export default function createRotation(inner, query, config) {
   });
 
   const rotatorBegin = new Rotator({
-    count: config.rotator.count,
+    count,
     id: 'rest-rotation-rotator-begin'
   });
 
