@@ -8,7 +8,12 @@ import {
   Worker
 } from '@scola/worker';
 
-export default function createRotation(inner, query, { count }) {
+export default function createRotation(inner, query, options = {}) {
+  const {
+    count,
+    pick
+  } = options;
+
   const broadcaster = new Broadcaster({
     id: 'rest-rotation-broadcaster',
     name: 'rotation-broadcaster'
@@ -46,7 +51,8 @@ export default function createRotation(inner, query, { count }) {
     merge(box, data, items, begin, end) {
       return [box, items.slice(begin, end).pop()];
     },
-    name: 'rest-rotation'
+    name: 'rest-rotation',
+    pick
   });
 
   const unifier = new Unifier({
@@ -60,7 +66,8 @@ export default function createRotation(inner, query, { count }) {
   broadcaster
     .connect(rotatorBegin)
     .connect(query.list(lister))
-    .connect(slicer)
+    .connect(slicer
+      .bypass(unifier))
     .connect(inner)
     .connect(unifier)
     .connect(rotatorEnd);
