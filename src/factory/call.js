@@ -22,15 +22,15 @@ export default function createCall(structure, query) {
     call: query.call && structure.call
   };
 
-  const begin = new Worker({
-    id: 'rest-call-begin'
+  const beginner = new Worker({
+    id: 'rest-call-beginner'
   });
 
-  const end = new Worker({
+  const ender = new Worker({
     err(request, error, callback) {
       this.fail(request.createResponse(), error, callback);
     },
-    id: 'rest-call-end'
+    id: 'rest-call-ender'
   });
 
   const methodRouter = new MethodRouter({
@@ -47,12 +47,12 @@ export default function createCall(structure, query) {
       id: 'rest-call-user-checker'
     });
 
-    begin
+    beginner
       .connect(userChecker)
       .connect(roleChecker)
       .connect(methodRouter);
   } else {
-    begin
+    beginner
       .connect(methodRouter);
   }
 
@@ -65,7 +65,7 @@ export default function createCall(structure, query) {
     methodRouter
       .connect('OPTIONS', query.options(options))
       .connect(optionsResolver)
-      .connect(end);
+      .connect(ender);
   }
 
   if (structure.call && query.call) {
@@ -85,17 +85,15 @@ export default function createCall(structure, query) {
     methodRouter
       .connect('POST', new Worker())
       .connect(query.options ? query.options(options) : null)
-      .connect(callValidator)
+      .connect(callValidator
+        .bypass(callResolver))
       .connect(query.call())
       .connect(callResolver)
-      .connect(end);
-
-    callValidator
-      .bypass(callResolver);
+      .connect(ender);
   }
 
   methodRouter
-    .bypass(end);
+    .bypass(ender);
 
-  return [begin, end];
+  return [beginner, ender];
 }

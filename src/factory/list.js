@@ -33,15 +33,15 @@ export default function createList(structure, query) {
     list: query.list && structure.list
   };
 
-  const begin = new Worker({
-    id: 'rest-list-begin'
+  const beginner = new Worker({
+    id: 'rest-list-beginner'
   });
 
-  const end = new Worker({
+  const ender = new Worker({
     err(request, error, callback) {
       this.fail(request.createResponse(), error, callback);
     },
-    id: 'rest-list-end'
+    id: 'rest-list-ender'
   });
 
   const methodRouter = new MethodRouter({
@@ -58,12 +58,12 @@ export default function createList(structure, query) {
       id: 'rest-list-user-checker'
     });
 
-    begin
+    beginner
       .connect(userChecker)
       .connect(roleChecker)
       .connect(methodRouter);
   } else {
-    begin
+    beginner
       .connect(methodRouter);
   }
 
@@ -89,13 +89,11 @@ export default function createList(structure, query) {
     methodRouter
       .connect('DELETE', new Worker())
       .connect(query.options ? query.options(options) : null)
-      .connect(deleteValidator)
+      .connect(deleteValidator
+        .bypass(deleteResolver))
       .connect(query.clr(deleter))
       .connect(deleteResolver)
-      .connect(end);
-
-    deleteValidator
-      .bypass(deleteResolver);
+      .connect(ender);
   }
 
   if (structure.list && query.list) {
@@ -116,13 +114,11 @@ export default function createList(structure, query) {
     });
 
     methodRouter
-      .connect('GET', listValidator)
+      .connect('GET', listValidator
+        .bypass(listResolver))
       .connect(query.list(lister))
       .connect(listResolver)
-      .connect(end);
-
-    listValidator
-      .bypass(listResolver);
+      .connect(ender);
   }
 
   if (query.options) {
@@ -134,7 +130,7 @@ export default function createList(structure, query) {
     methodRouter
       .connect('OPTIONS', query.options(options))
       .connect(optionsResolver)
-      .connect(end);
+      .connect(ender);
   }
 
   if (structure.add && query.add) {
@@ -160,17 +156,15 @@ export default function createList(structure, query) {
     methodRouter
       .connect('POST', new Worker())
       .connect(query.options ? query.options(options) : null)
-      .connect(addValidator)
+      .connect(addValidator
+        .bypass(addResolver))
       .connect(query.add(adder))
       .connect(addResolver)
-      .connect(end);
-
-    addValidator
-      .bypass(addResolver);
+      .connect(ender);
   }
 
   methodRouter
-    .bypass(end);
+    .bypass(ender);
 
-  return [begin, end];
+  return [beginner, ender];
 }

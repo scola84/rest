@@ -35,15 +35,15 @@ export default function createObject(structure, query) {
     view: query.view && structure.view
   };
 
-  const begin = new Worker({
-    id: 'rest-object-begin'
+  const beginner = new Worker({
+    id: 'rest-object-beginner'
   });
 
-  const end = new Worker({
+  const ender = new Worker({
     err(request, error, callback) {
       this.fail(request.createResponse(), error, callback);
     },
-    id: 'rest-object-end'
+    id: 'rest-object-ender'
   });
 
   const methodRouter = new MethodRouter({
@@ -64,12 +64,12 @@ export default function createObject(structure, query) {
       id: 'rest-object-user-checker'
     });
 
-    begin
+    beginner
       .connect(userChecker)
       .connect(roleChecker)
       .connect(methodRouter);
   } else {
-    begin
+    beginner
       .connect(methodRouter);
   }
 
@@ -123,7 +123,7 @@ export default function createObject(structure, query) {
     methodRouter
       .connect('OPTIONS', query.options(options))
       .connect(optionsResolver)
-      .connect(end);
+      .connect(ender);
   }
 
   if (structure.patch && query.patch) {
@@ -172,11 +172,11 @@ export default function createObject(structure, query) {
       .connect(objectResolver);
   }
 
-  methodRouter
-    .bypass(end);
-
   objectResolver
-    .connect(end);
+    .connect(ender);
 
-  return [begin, end];
+  methodRouter
+    .bypass(ender);
+
+  return [beginner, ender];
 }
