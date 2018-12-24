@@ -4,9 +4,14 @@ import createExport from './export';
 import createImport from './import';
 import createList from './list';
 import createObject from './object';
-import createRotation from './rotation';
+
+import {
+  changeRotation,
+  createRotation
+} from './rotation';
 
 export {
+  changeRotation,
   createCall,
   createCheck,
   createExport,

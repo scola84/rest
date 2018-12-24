@@ -8,11 +8,23 @@ import {
   Worker
 } from '@scola/worker';
 
-export default function createRotation(inner, query, options = {}) {
-  const {
-    count,
-    pick
-  } = options;
+import defaults from 'lodash-es/defaultsDeep';
+import merge from 'lodash-es/merge';
+
+const roptions = {
+  count: 10,
+  pick: {
+    index: 1,
+    total: 1
+  }
+};
+
+export function changeRotation(options) {
+  merge(roptions, options);
+}
+
+export function createRotation(inner, query, options = {}) {
+  options = defaults(options, roptions);
 
   const broadcaster = new Broadcaster({
     id: 'rest-rotation-broadcaster',
@@ -33,7 +45,7 @@ export default function createRotation(inner, query, options = {}) {
   });
 
   const rotatorBegin = new Rotator({
-    count,
+    count: options.count,
     id: 'rest-rotation-rotator-begin'
   });
 
@@ -52,7 +64,7 @@ export default function createRotation(inner, query, options = {}) {
       return [box, items.slice(begin, end).pop()];
     },
     name: 'rest-rotation',
-    pick
+    pick: options.pick
   });
 
   const unifier = new Unifier({

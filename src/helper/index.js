@@ -1,9 +1,4 @@
 import {
-  setConfig,
-  config
-} from './config';
-
-import {
   Deleter,
   Inserter,
   Selector,
@@ -33,11 +28,6 @@ import queryCall from './query/call';
 import queryList from './query/list';
 import queryObject from './query/object';
 import whereAuth from './where/auth';
-
-export {
-  setConfig,
-  config
-};
 
 export {
   Deleter,

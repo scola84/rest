@@ -9,7 +9,6 @@ import {
   Inserter,
   Selector,
   Updater,
-  setConfig,
   setDatabase,
   decideLink,
   decideImport,
@@ -32,11 +31,11 @@ import {
   queryCall,
   queryList,
   queryObject,
-  whereAuth,
-  config
+  whereAuth
 } from './src/helper';
 
 import {
+  changeRotation,
   createCall,
   createCheck,
   createExport,
@@ -57,7 +56,6 @@ export {
   Inserter,
   Selector,
   Updater,
-  setConfig,
   setDatabase,
   decideLink,
   decideImport,
@@ -80,11 +78,11 @@ export {
   queryCall,
   queryList,
   queryObject,
-  whereAuth,
-  config
+  whereAuth
 };
 
 export {
+  changeRotation,
   createCall,
   createCheck,
   createExport,
