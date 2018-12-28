@@ -1,26 +1,48 @@
 import { Worker } from '@scola/worker';
+import defaults from 'lodash-es/defaultsDeep';
 import each from 'async/each';
+import merge from 'lodash-es/merge';
 import { createReadStream, createWriteStream } from 'fs';
 import { ensureDirSync } from 'fs-extra';
 import sharp from 'sharp';
 import shortid from 'shortid';
 
+const woptions = {
+  base: null,
+  path: null,
+  postfix: null,
+  resize: null
+};
+
 export default class FileWriter extends Worker {
+  static setOptions(options) {
+    merge(woptions, options);
+  }
+
   constructor(options = {}) {
     super(options);
 
-    this._basePath = null;
+    options = defaults(options, woptions);
+
+    this._base = null;
+    this._path = null;
     this._postfix = null;
     this._resize = null;
 
-    this.setBasePath(options.basePath);
+    this.setBase(options.base);
+    this.setPath(options.path);
     this.setPostfix(options.postfix);
     this.setResize(options.resize);
   }
 
-  setBasePath(value = '/tmp/') {
-    this._basePath = value;
-    ensureDirSync(this._basePath);
+  setBase(value = '/tmp/') {
+    this._base = value;
+    return this;
+  }
+
+  setPath(value = 'scola/') {
+    this._path = value;
+    ensureDirSync(this._base + '/' + this._path);
 
     return this;
   }
@@ -42,7 +64,8 @@ export default class FileWriter extends Worker {
 
     for (let i = 0; i < input.length; i += 1) {
       input[i].date = date;
-      input[i].path = this._basePath + date + '-' + shortid.generate();
+      input[i].path = this._base + '/' + this._path +
+        date + '-' + shortid.generate();
 
       if (input[i].type.match(/^image\//) && this._resize.length > 0) {
         this._prepareResize(files, input[i]);

@@ -1,24 +1,42 @@
 import { Worker } from '@scola/worker';
 import { createTransport } from 'nodemailer';
+import defaults from 'lodash-es/defaultsDeep';
 import each from 'async/each';
 import marked from 'marked';
+import merge from 'lodash-es/merge';
 import sprintf from 'sprintf-js';
 
+const woptions = {};
+
 export default class MailWriter extends Worker {
+  static setOptions(options) {
+    merge(woptions, options);
+  }
+
   constructor(options = {}) {
     super(options);
 
-    this._config = null;
-    this.setConfig(options.config);
+    options = defaults(options, woptions);
+
+    this._message = null;
+    this._transport = null;
+
+    this.setMessage(options.message);
+    this.setTransport(options.transport);
   }
 
-  setConfig(value = {}) {
-    this._config = value;
+  setMessage(value = {}) {
+    this._message = value;
+    return this;
+  }
+
+  setTransport(value = {}) {
+    this._transport = value;
     return this;
   }
 
   act(request, data, callback) {
-    const smtp = createTransport(this._config.transport);
+    const smtp = createTransport(this._transport);
     const pass = [];
     const fail = [];
 
@@ -58,7 +76,7 @@ export default class MailWriter extends Worker {
         subject: data.mail.subject,
         html,
         text
-      }, this._config.message);
+      }, this._message);
 
       return smtp.sendMail(message, (error, info) => {
         if (error) {

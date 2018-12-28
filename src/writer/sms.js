@@ -1,23 +1,33 @@
 import { Worker } from '@scola/worker';
+import defaults from 'lodash-es/defaultsDeep';
 import messagebird from 'messagebird';
 import each from 'async/each';
+import merge from 'lodash-es/merge';
 import sprintf from 'sprintf-js';
 
+const woptions = {};
+
 export default class SmsWriter extends Worker {
+  static setOptions(options) {
+    merge(woptions, options);
+  }
+
   constructor(options = {}) {
     super(options);
 
-    this._config = null;
-    this.setConfig(options.config);
+    options = defaults(options, woptions);
+
+    this._transport = null;
+    this.setTransport(options.transport);
   }
 
-  setConfig(value = {}) {
-    this._config = value;
+  setTransport(value = {}) {
+    this._transport = value;
     return this;
   }
 
   act(request, data, callback) {
-    const transport = messagebird(this._config.transport.key);
+    const transport = messagebird(this._transport.key);
     const pass = [];
     const fail = [];
 
