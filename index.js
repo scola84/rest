@@ -5,6 +5,7 @@ import {
 } from './src/writer';
 
 import {
+  Database,
   Deleter,
   Inserter,
   Selector,
@@ -52,6 +53,7 @@ export {
 };
 
 export {
+  Database,
   Deleter,
   Inserter,
   Selector,

@@ -1,4 +1,5 @@
 import {
+  Database,
   Deleter,
   Inserter,
   Selector,
@@ -30,6 +31,7 @@ import queryObject from './query/object';
 import whereAuth from './where/auth';
 
 export {
+  Database,
   Deleter,
   Inserter,
   Selector,

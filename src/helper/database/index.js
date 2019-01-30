@@ -1,16 +1,19 @@
+let Database = null;
 let Deleter = null;
 let Inserter = null;
-let Updater = null;
 let Selector = null;
+let Updater = null;
 
 function setDatabase(database) {
+  Database = database.Database;
   Deleter = database.Deleter;
   Inserter = database.Inserter;
-  Updater = database.Updater;
   Selector = database.Selector;
+  Updater = database.Updater;
 }
 
 export {
+  Database,
   Deleter,
   Inserter,
   Selector,
