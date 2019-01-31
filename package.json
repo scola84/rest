@@ -9,7 +9,7 @@
   "jsnext:main": "./index.js",
   "dependencies": {
     "@scola/http": "^5.8.1",
-    "@scola/validator": "^11.4.8",
+    "@scola/validator": "^11.4.9",
     "@scola/worker": "^2.14.0",
     "async": "^2.6.1",
     "fs-extra": "^7.0.1",
