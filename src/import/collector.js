@@ -22,21 +22,26 @@ export default class Collector extends Worker {
   }
 
   act(box, data, callback) {
-    box.data.output[this._object][this._name][box.begin] = Object.assign({},
-      data.data,
-      box.data.output[this._object][this._name][box.begin]
+    const object = box.data.output[this._object][this._name];
+
+    object[box.begin] = Object.assign({},
+      object[box.begin],
+      data.data
     );
 
     this.pass(box, box.data, callback);
   }
 
   err(box, error, callback) {
-    box.data.output.error = true;
-    box.data.output[this._object][this._name][box.begin].error = {
+    const object = box.data.output[this._object][this._name];
+
+    object[box.begin].error = {
       message: error.message,
       field: error.field,
       reason: error.reason
     };
+
+    box.data.output.error = true;
 
     this.pass(box, box.data, callback);
   }
