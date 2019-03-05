@@ -1,3 +1,5 @@
+import MaskedId from './masked-id';
+
 let Database = null;
 let Deleter = null;
 let Inserter = null;
@@ -13,10 +15,17 @@ function setDatabase(database) {
 }
 
 export {
+  MaskedId
+};
+
+export {
   Database,
   Deleter,
   Inserter,
   Selector,
-  Updater,
+  Updater
+};
+
+export {
   setDatabase
 };

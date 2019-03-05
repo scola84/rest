@@ -1,4 +1,5 @@
 import {
+  MaskedId,
   Database,
   Deleter,
   Inserter,
@@ -31,6 +32,7 @@ import queryObject from './query/object';
 import whereAuth from './where/auth';
 
 export {
+  MaskedId,
   Database,
   Deleter,
   Inserter,

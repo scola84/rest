@@ -5,6 +5,7 @@ import {
 } from './src/writer';
 
 import {
+  MaskedId,
   Database,
   Deleter,
   Inserter,
@@ -53,6 +54,7 @@ export {
 };
 
 export {
+  MaskedId,
   Database,
   Deleter,
   Inserter,
