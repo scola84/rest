@@ -1,16 +1,47 @@
+import Long from 'long';
+
 const formatters = {
-  string: (a, b) => `${a} << ${b}`,
-  value: (a, b) => a << b
+  string: (a, b) => {
+    return `${a} << ${b}`;
+  },
+  value: (a, b) => {
+    a = Long.fromNumber(a);
+    b = Long.fromNumber(b);
+
+    return a
+      .shiftLeft(b)
+      .toNumber();
+  }
 };
 
 const parsers = {
-  string: (a, b, c) => `${a} >> ${b} & ${c}`,
-  value: (a, b, c) => a >> b & c
+  string: (a, b, c) => {
+    return `${a} >> ${b} & ${c}`;
+  },
+  value: (a, b, c) => {
+    a = Long.fromNumber(a);
+    b = Long.fromNumber(b);
+    c = Long.fromNumber(c);
+
+    return a
+      .shiftRight(b)
+      .and(c)
+      .toNumber();
+  }
 };
 
 const unsetters = {
-  string: (a, b) => `${a} & ~${b}`,
-  value: (a, b) => a & ~b
+  string: (a, b) => {
+    return `${a} & ~${b}`;
+  },
+  value: (a, b) => {
+    a = Long.fromNumber(a);
+    b = Long.fromNumber(b);
+
+    return a
+      .and(b.not())
+      .toNumber();
+  }
 };
 
 const ids = {};
