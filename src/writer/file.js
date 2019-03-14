@@ -67,9 +67,11 @@ export default class FileWriter extends Worker {
     const files = [];
 
     for (let i = 0; i < input.length; i += 1) {
-      input[i].date = date;
-      input[i].path = this._base + '/' + this._path +
-        date + '-' + shortid.generate();
+      defaults({
+        date,
+        path: this._base + '/' + this._path +
+          date + '-' + shortid.generate()
+      }, input[i]);
 
       if (input[i].type.match(/^image\//) && this._resize.length > 0) {
         this._prepareResize(files, input[i]);
