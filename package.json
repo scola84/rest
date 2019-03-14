@@ -8,9 +8,9 @@
   "main": "./index.js",
   "jsnext:main": "./index.js",
   "dependencies": {
-    "@scola/http": "^5.9.4",
+    "@scola/http": "^5.9.6",
     "@scola/validator": "^11.4.11",
-    "@scola/worker": "^2.14.2",
+    "@scola/worker": "^2.14.3",
     "async": "^2.6.2",
     "fs-extra": "^7.0.1",
     "lodash-es": "^4.17.11",
