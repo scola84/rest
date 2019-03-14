@@ -15,6 +15,10 @@ const woptions = {
 };
 
 export default class FileWriter extends Worker {
+  static getOptions() {
+    return woptions;
+  }
+
   static setOptions(options) {
     merge(woptions, options);
   }

@@ -9,6 +9,10 @@ import sprintf from 'sprintf-js';
 const woptions = {};
 
 export default class MailWriter extends Worker {
+  static getOptions() {
+    return woptions;
+  }
+
   static setOptions(options) {
     merge(woptions, options);
   }

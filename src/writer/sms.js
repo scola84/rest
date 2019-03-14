@@ -8,6 +8,10 @@ import sprintf from 'sprintf-js';
 const woptions = {};
 
 export default class SmsWriter extends Worker {
+  static getOptions() {
+    return woptions;
+  }
+
   static setOptions(options) {
     merge(woptions, options);
   }
