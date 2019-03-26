@@ -4,6 +4,7 @@ import {
   Deleter,
   Inserter,
   Selector,
+  Transactor,
   Updater,
   setDatabase
 } from './database';
@@ -37,6 +38,7 @@ export {
   Deleter,
   Inserter,
   Selector,
+  Transactor,
   Updater,
   setDatabase
 };

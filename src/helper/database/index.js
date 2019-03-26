@@ -4,6 +4,7 @@ let Database = null;
 let Deleter = null;
 let Inserter = null;
 let Selector = null;
+let Transactor = null;
 let Updater = null;
 
 function setDatabase(database) {
@@ -11,6 +12,7 @@ function setDatabase(database) {
   Deleter = database.Deleter;
   Inserter = database.Inserter;
   Selector = database.Selector;
+  Transactor = database.Transactor;
   Updater = database.Updater;
 }
 
@@ -23,6 +25,7 @@ export {
   Deleter,
   Inserter,
   Selector,
+  Transactor,
   Updater
 };
 
