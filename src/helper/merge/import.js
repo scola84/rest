@@ -6,7 +6,8 @@ export default function mergeImport() {
       data,
       import: box.box.box.import,
       parseUrl: () => box.box.box.parseUrl(),
-      user: box.box.box.user
+      user: box.box.box.user,
+      virtual: box.box.virtual
     }, box);
 
     return [importBox, { data: items.slice(begin, end).pop() || {} }];

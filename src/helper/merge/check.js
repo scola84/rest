@@ -1,9 +1,13 @@
 export default function mergeCheck(parent) {
-  return (request, data, { query, result }) => {
+  return (request, data, { key, query, result }) => {
+    const isVirtual = typeof request.virtual !== 'undefined' &&
+      key !== null &&
+      request.virtual.indexOf(key.name) !== -1;
+
     const count = typeof request.body.count === 'undefined' ?
       1 : request.body.count;
 
-    if (result.length !== count) {
+    if (isVirtual === false && result.length !== count) {
       throw new Error('403 Modification not allowed' +
         ` (expected ${count}, found ${result.length})`);
     }
@@ -11,7 +15,7 @@ export default function mergeCheck(parent) {
     request.check = request.check || {};
     request.check[parent.name || 'default'] = result;
 
-    if (parent.scope) {
+    if (result.length > 0 && parent.scope) {
       result = result[0];
 
       const found = request.user.may({
@@ -30,7 +34,7 @@ export default function mergeCheck(parent) {
     }
 
     if (parent.merge) {
-      data = parent.merge(request, data, { query, result });
+      data = parent.merge(request, data, { key, query, result });
     }
 
     return data;

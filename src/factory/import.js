@@ -1,5 +1,4 @@
 import {
-  Database,
   Inserter,
   Selector,
   Transactor,
@@ -31,10 +30,9 @@ import {
   mergeUnique
 } from '../helper';
 
-export default function createImport(structure, query, imprt) {
+export default function createImport(structure, query, imprt, options) {
   const importBeginner = new Transactor({
-    id: 'rest-import-import-beginner',
-    begin: true,
+    begin: options.begin,
     connection(box, data, pool, callback) {
       pool.getConnection((error, connection) => {
         if (error) {
@@ -45,50 +43,52 @@ export default function createImport(structure, query, imprt) {
         box.connection = connection;
         callback(null, connection);
       });
-    }
+    },
+    id: 'rest-import-import-beginner'
   });
 
   const importBroadcaster = new Broadcaster({
     id: 'rest-import-import-broadcaster',
-    name: 'import'
+    name: 'import',
+    sync: true
   });
 
   const importCommitter = new Transactor({
-    id: 'rest-import-import-committer',
+    commit: options.commit,
     connection: (box, data, pool, callback) => {
       callback(null, box.connection, false);
     },
     decide: (box, data) => {
       return data.output.error !== true;
     },
-    commit: true
+    id: 'rest-import-import-committer'
   });
 
   const importRollbacker = new Transactor({
-    id: 'rest-import-import-rollbacker',
     connection: (box, data, pool, callback) => {
       callback(null, box.connection, false);
     },
     decide: (box, data) => {
       return data.output.error === true;
     },
-    rollback: true
+    id: 'rest-import-import-rollbacker',
+    rollback: options.rollback
   });
 
   const importUnifier = new Unifier({
     id: 'rest-import-import-unifier',
-    name: 'import'
+    name: 'import',
+    sync: true
   });
 
   const importQueuer = new Queuer({
-    id: 'rest-import-import-queuer',
-    wrap: true
+    id: 'rest-import-import-queuer'
   });
 
   const importResolver = new Worker({
     act(box, data, callback) {
       callback();
-      this.pass(box.box, data);
+      this.pass(box, data);
     },
     id: 'rest-import-import-resolver'
   });
@@ -104,7 +104,6 @@ export default function createImport(structure, query, imprt) {
   let adder = null;
   let collector = null;
   let editor = null;
-  let id = null;
   let importer = null;
   let slicer = null;
   let unifier = null;
@@ -122,7 +121,6 @@ export default function createImport(structure, query, imprt) {
 
       adder = null;
       editor = null;
-      id = null;
       unique = null;
       validator = null;
 
@@ -188,33 +186,16 @@ export default function createImport(structure, query, imprt) {
             imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-adder',
-          merge: mergeAdd()
-        });
-
-        id = new Database({
-          connection: (box, data, pool, callback) => {
-            callback(null, box.box.connection, false);
+          merge: (box, data, merger) => {
+            return mergeAdd(true)(box.box, data, merger);
           },
-          create: () => {
-            return 'SELECT LAST_INSERT_ID() AS insertId';
-          },
-          decide: decideImport(null, false, true, 'add',
-            imprt[object][name]),
-          filter: filterData({}, false),
-          key: adder.getKey(),
-          merge: (box, data, { result, key }) => {
-            return mergeAdd()(box, data, {
-              result: result[0],
-              key
-            });
-          }
+          trigger: false
         });
 
         if (objectQuery.add) {
           adder = objectQuery.add(adder);
         } else {
           adder = objectQuery.edit(adder);
-          id = null;
         }
       }
 
@@ -227,7 +208,8 @@ export default function createImport(structure, query, imprt) {
             imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-editor',
-          merge: mergeData()
+          merge: mergeData(),
+          trigger: false
         });
 
         editor.set({ any: true });
@@ -240,7 +222,6 @@ export default function createImport(structure, query, imprt) {
         .connect(validator)
         .connect(unique)
         .connect(adder)
-        .connect(id)
         .connect(editor)
         .connect(collector)
         .connect(unifier)
