@@ -90,6 +90,10 @@ export default function createImport(structure, query, imprt, options) {
       callback();
       this.pass(box, data);
     },
+    err(box, error, callback) {
+      callback();
+      this.pass(box, error.data);
+    },
     id: 'rest-import-import-resolver'
   });
 
@@ -167,6 +171,9 @@ export default function createImport(structure, query, imprt, options) {
 
       if (objectQuery && objectQuery.unique) {
         unique = new Selector({
+          connection: (box, data, pool, callback) => {
+            callback(null, box.box.connection, false);
+          },
           decide: decideImport(false, false, false, 'unique',
             imprt[object][name]),
           filter: filterData({}, false),
@@ -230,7 +237,8 @@ export default function createImport(structure, query, imprt, options) {
   }
 
   importQueuer
-    .connect(importBeginner)
+    .connect(importBeginner
+      .bypass(importResolver))
     .connect(importBroadcaster);
 
   importUnifier
