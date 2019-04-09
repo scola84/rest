@@ -56,10 +56,10 @@ export default function createImport(structure, query, imprt, options) {
   });
 
   const importCommitter = new Transactor({
-    connection: (box, data, pool, callback) => {
+    connection(box, data, pool, callback) {
       callback(null, box.connection);
     },
-    decide: (box, data) => {
+    decide(box, data) {
       return options.commit === true &&
         data.output.error !== true;
     },
@@ -67,10 +67,10 @@ export default function createImport(structure, query, imprt, options) {
   });
 
   const importRollbacker = new Transactor({
-    connection: (box, data, pool, callback) => {
+    connection(box, data, pool, callback) {
       callback(null, box.connection);
     },
-    decide: (box, data) => {
+    decide(box, data) {
       return options.rollback === true &&
         data.output.error === true;
     },
@@ -84,17 +84,28 @@ export default function createImport(structure, query, imprt, options) {
   });
 
   const importQueuer = new Queuer({
+    decide() {
+      return options.queue === true;
+    },
     id: 'rest-import-import-queuer'
   });
 
   const importResolver = new Worker({
     act(box, data, callback) {
-      callback();
-      this.pass(box, data);
+      if (options.resolve === true) {
+        callback();
+        callback = null;
+      }
+
+      this.pass(box, data, callback);
     },
     err(box, error, callback) {
-      callback();
-      this.pass(box, error.data);
+      if (options.resolve === true) {
+        callback();
+        callback = null;
+      }
+
+      this.pass(box, error.data, callback);
     },
     id: 'rest-import-import-resolver'
   });
@@ -193,7 +204,7 @@ export default function createImport(structure, query, imprt, options) {
             imprt[object][name]),
           filter: filterData({}, false),
           id: 'rest-import-adder',
-          merge: (box, data, merger) => {
+          merge(box, data, merger) {
             return mergeAdd(true)(box.box, data, merger);
           },
           trigger: false
