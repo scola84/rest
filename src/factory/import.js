@@ -31,8 +31,7 @@ import {
 } from '../helper';
 
 export default function createImport(structure, query, imprt, options) {
-  const importBeginner = new Transactor({
-    begin: options.begin,
+  const importStarter = new Transactor({
     connection(box, data, pool, callback) {
       pool.getConnection((error, connection) => {
         if (error) {
@@ -41,10 +40,13 @@ export default function createImport(structure, query, imprt, options) {
         }
 
         box.connection = connection;
-        callback(null, connection);
+        callback(null, connection, false);
       });
     },
-    id: 'rest-import-import-beginner'
+    decide() {
+      return options.start === true;
+    },
+    id: 'rest-import-import-starter'
   });
 
   const importBroadcaster = new Broadcaster({
@@ -54,25 +56,25 @@ export default function createImport(structure, query, imprt, options) {
   });
 
   const importCommitter = new Transactor({
-    commit: options.commit,
     connection: (box, data, pool, callback) => {
-      callback(null, box.connection, false);
+      callback(null, box.connection);
     },
     decide: (box, data) => {
-      return data.output.error !== true;
+      return options.commit === true &&
+        data.output.error !== true;
     },
     id: 'rest-import-import-committer'
   });
 
   const importRollbacker = new Transactor({
     connection: (box, data, pool, callback) => {
-      callback(null, box.connection, false);
+      callback(null, box.connection);
     },
     decide: (box, data) => {
-      return data.output.error === true;
+      return options.rollback === true &&
+        data.output.error === true;
     },
-    id: 'rest-import-import-rollbacker',
-    rollback: options.rollback
+    id: 'rest-import-import-rollbacker'
   });
 
   const importUnifier = new Unifier({
@@ -96,6 +98,10 @@ export default function createImport(structure, query, imprt, options) {
     },
     id: 'rest-import-import-resolver'
   });
+
+  importCommitter.commit(true);
+  importRollbacker.rollback(true);
+  importStarter.start(true);
 
   let object = null;
   let name = null;
@@ -171,9 +177,6 @@ export default function createImport(structure, query, imprt, options) {
 
       if (objectQuery && objectQuery.unique) {
         unique = new Selector({
-          connection: (box, data, pool, callback) => {
-            callback(null, box.box.connection, false);
-          },
           decide: decideImport(false, false, false, 'unique',
             imprt[object][name]),
           filter: filterData({}, false),
@@ -186,9 +189,6 @@ export default function createImport(structure, query, imprt, options) {
 
       if (objectQuery && objectQuery.add || objectQuery.edit) {
         adder = new Inserter({
-          connection: (box, data, pool, callback) => {
-            callback(null, box.box.connection, false);
-          },
           decide: decideImport(null, false, true, 'add',
             imprt[object][name]),
           filter: filterData({}, false),
@@ -208,9 +208,6 @@ export default function createImport(structure, query, imprt, options) {
 
       if (objectQuery && objectQuery.edit) {
         editor = new Updater({
-          connection: (box, data, pool, callback) => {
-            callback(null, box.box.connection, false);
-          },
           decide: decideImport(true, true, true, 'edit',
             imprt[object][name]),
           filter: filterData({}, false),
@@ -237,7 +234,7 @@ export default function createImport(structure, query, imprt, options) {
   }
 
   importQueuer
-    .connect(importBeginner
+    .connect(importStarter
       .bypass(importResolver))
     .connect(importBroadcaster);
 

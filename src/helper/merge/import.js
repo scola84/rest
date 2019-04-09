@@ -1,6 +1,7 @@
 export default function mergeImport() {
   return (box, data, items, begin, end) => {
     const importBox = Object.assign({
+      connection: box.box.connection,
       begin,
       body: {},
       data,
