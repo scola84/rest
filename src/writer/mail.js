@@ -75,6 +75,7 @@ export default class MailWriter extends Worker {
       }
 
       const message = Object.assign({
+        attachments: data.mail.attachments,
         from: data.mail.from,
         to: datum.to,
         subject: data.mail.subject,
