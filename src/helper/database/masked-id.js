@@ -30,6 +30,22 @@ const parsers = {
   }
 };
 
+const reducers = {
+  string: (args) => {
+    return args.join(' | ');
+  },
+  value: (args) => {
+    const result = args.reduce((a, b) => {
+      a = Long.fromNumber(a);
+      b = Long.fromNumber(b);
+
+      return a.or(b);
+    }, 0);
+
+    return result.toNumber();
+  }
+};
+
 const unsetters = {
   string: (a, b) => {
     return `${a} & ~${b}`;
@@ -89,6 +105,10 @@ export default class MaskedId {
     }
 
     return result;
+  }
+
+  reduce(type, ...args) {
+    return reducers[type](args);
   }
 
   unset(type, arg, from) {
