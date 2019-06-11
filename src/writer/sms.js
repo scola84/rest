@@ -63,6 +63,10 @@ export default class SmsWriter extends Worker {
   }
 
   decide(request, data) {
+    if (this._decide) {
+      return this._decide(request, data);
+    }
+
     return Array.isArray(data.data) &&
       typeof data.sms !== 'undefined';
   }

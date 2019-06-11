@@ -44,10 +44,10 @@ export default class MailWriter extends Worker {
     const pass = [];
     const fail = [];
 
-    const body = data.mail.body;
     const wrap = (data.mail.wrap || '%s').replace(/%([^s])/g, '%%$1');
 
     each(data.data, (datum, eachCallback) => {
+      let subject = null;
       let text = null;
       let html = null;
 
@@ -64,7 +64,8 @@ export default class MailWriter extends Worker {
       }
 
       try {
-        text = sprintf.sprintf(body, datum);
+        subject = sprintf.sprintf(data.mail.subject, datum);
+        text = sprintf.sprintf(data.mail.body, datum);
         html = sprintf.sprintf(wrap, marked(text, {
           breaks: true,
           sanitize: true
@@ -78,7 +79,7 @@ export default class MailWriter extends Worker {
         attachments: data.mail.attachments,
         from: data.mail.from,
         to: datum.to,
-        subject: data.mail.subject,
+        subject,
         html,
         text
       }, this._message);
@@ -100,6 +101,10 @@ export default class MailWriter extends Worker {
   }
 
   decide(request, data) {
+    if (this._decide) {
+      return this._decide(request, data);
+    }
+
     return Array.isArray(data.data) &&
       typeof data.mail !== 'undefined';
   }
